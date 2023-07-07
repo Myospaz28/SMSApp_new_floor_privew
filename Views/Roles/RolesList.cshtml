@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/AppJs/Role/RoleView.js"></script>
+
+<script type="text/javascript">
+
+    function AddNewRole() {
+        window.location.href = '@Url.Action("New","Roles")';
+        return false;
+    }
+
+</script>
+<div ng-controller="RoleViewCtrl">
+    <div class="col-xl-12">
+        <section class="box ">
+            <header class="panel_header">
+                <h2 class="title float-left" style="width:100% !important">
+                    役割マスター
+                    <button type="button" class="btn btn-xs btn-primary float-right" onclick="AddNewRole();" style="margin-right:2%">
+                        <span class="fa fa-plus">
+                            新規
+                        </span>
+                    </button>
+                </h2>
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-12">
+                    </div>
+                    <div class="col-12">
+                        <table id="example-11" class="display table table-hover table-condensed" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Sr No</th>
+                                    <th>役割</th>
+                                    <th>ステータス</th>
+                                    <th>Created On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in RoleList">
+                                    <td>
+                                        <span style="cursor:pointer" ng-click="RedirectToEdit(item.RoleId);">
+                                            <i class="fa fa-edit"></i>
+                                        </span>
+                                    </td>
+                                    <td ng-bind="item.RowId"></td>
+                                    <td ng-bind="item.Rolename"></td>
+                                    <td ng-bind="item.Status"></td>
+                                    <td ng-bind="item.CreatedOn"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,359 @@
+﻿@model SMSApp.Models.SC.FloorMapSC
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewBag.Title = "UserRole";
+    Layout = null;
+
+    string? mName = string.Empty;
+    string? mRoleName = string.Empty;
+
+    mName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+    mRoleName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value;
+
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+    string? mType = string.Empty;
+
+    if (Context.Request.Query.TryGetValue("vType", out queryVal))
+    {
+        mType = queryVal.FirstOrDefault();
+    }
+
+    string mCurrUserId = string.Empty;
+    if (ViewBag.UserId != null)
+    {
+        mCurrUserId = ViewBag.UserId.ToString();
+    }
+
+    string FloorMapId = string.Empty;
+    if (ViewBag.FloorMapId != null)
+    {
+        FloorMapId = ViewBag.FloorMapId.ToString();
+    }
+
+    string? mFloorId = string.Empty;
+    if (Context.Request.Query.TryGetValue("id", out queryVal))
+    {
+        mFloorId = queryVal.FirstOrDefault();
+    }
+}
+
+<script type="text/javascript">
+    var mType = '@mType';
+    var mCurrUserId = '@mCurrUserId';
+    var mFloorId = '@mFloorId';
+    var mFloorMapId = '@FloorMapId';
+
+    _FloorMapForm.LoadSearchData();
+
+</script>
+
+<script type="text/javascript">
+
+    function OnFloorMapSuccess() {
+        swal({
+            title: "SUCCESS!",
+            text: "正常に完了しました。",
+            type: "success",
+            confirmButtonText: "OK"
+        },
+            function (isConfirm) {
+
+                var mFloorId = $("#txtFloorId").val();
+
+                window.location.href = '/Floor/EditMapFloor?id=' + mFloorId + '&FloorMapId=' + mFloorMapId + '&vType=' + mType;
+            });
+    }
+
+    function CloseUserDtls() {
+        $("#dvUserDtls").modal('hide');
+        return false;
+    }
+
+    function CloseWFHUsers() {
+        $("#dvWFHUser").modal('hide');
+        return false;
+    }
+
+</script>
+
+<style>
+
+    #container {
+        position: relative;
+    }
+
+    #rect1 {
+        position: absolute;
+        top: 376px;
+        left: 380px;
+        width: 30px;
+        height: 25px;
+        background-color: rgba(0, 0, 255, 0.3);
+        cursor: pointer;
+    }
+
+    .rectangle {
+        position: absolute;
+        width: 30px;
+        height: 25px;
+        background-color: rgba(0, 0, 255, 0.3);
+        cursor: pointer;
+    }
+
+    .popup {
+        border: 2px solid blue;
+        border-radius: 5px;
+    }
+</style>
+
+<div ng-controller="FloorMapFormCtrl" id="dvFloorMapSearch" class="dvFloorMapSearch" name="dvFloorMapSearch">
+    <div class="col-12">
+        <section class="box" style="margin:-15px">
+            <header class="panel_header">
+                @if (Model != null)
+                {
+                    if (mType == "Srch")
+                    {
+                        <h2 class="title float-left">座席の表示 - @Model.FloorName</h2>
+                    }
+                    else
+                    {
+                        <h2 class="title float-left">座席の選択 - @Model.FloorName</h2>
+                    }
+                }
+
+                <button class="btn btn-primary" type="button" ng-click="GetAllWFHUsersUnderHM();" style="margin:20px">
+                    在宅勤務中のユーザ
+                </button>
+
+                <button class="btn btn-default" type="button" style="margin:20px" ng-click="CloseDialog();">
+                    戻る
+                </button>
+
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <div class="dvControls" id="dvControls">
+                                <img id="myImgId" src="@Url.Content(Model.ImagePath)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="dvChairDtls" aria-labelledby="dvChairDtls" class="modal fade" role="dialog"
+         data-backdrop="static" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">座標の登録</h4>
+                    <button aria-label="Close" class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/Floor/SaveMapFloor" data-ajax="true" data-ajax-failure="OnFailure"
+                          data-ajax-method="POST" data-ajax-success="OnFloorMapSuccess" id="form0" method="post" enctype="multipart/form-data">
+
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label title">
+                                        幅
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.width, new {@id="txtWidth", @class = "form-control", @placeholder = "幅", @autocomplete = "off",@value="15" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.width)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        縦
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.height, new { @id="txtHeight", @class = "form-control", @placeholder = "縦", @autocomplete = "off",@value="15" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.height)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        座席名
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.SeatID, new { @id="txtSeatId",@class = "form-control", @placeholder = "座席名", @autocomplete = "off" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.SeatID)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label title">
+                                        備考
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextAreaFor(model => model.SeatDetails, new { @id="txtSeatDtls",@class = "form-control", @placeholder = "備考", @autocomplete = "off" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.SeatDetails)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">クリックのX, Y</label>
+                                    <div class="controls">
+                                        <span id="spCurrentXY"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">ステータス</label>
+                                    <div class="controls">
+                                        @Html.RadioButtonFor(model => model.IsActive, "1", new { @id = "rdoStatusActive", @checked = "checked" })
+                                        <label class="form-label" for="rdoStatusActive">有効</label>
+                                        @Html.RadioButtonFor(model => model.IsActive, "0", new { @id = "rdoStatusInActive" })
+                                        <label class="form-label" for="rdoStatusInActive">無効</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary btn-sm" type="button" onclick="CloseUserDtls();">
+                                <i class="fa fa-remove"></i>
+                                キャンセル
+                            </button>
+                        </div>
+                        <div>
+                            @Html.HiddenFor(model => model.CurrentX, new { @id = "hiddCurrentX"})
+                            @Html.HiddenFor(model => model.CurrentY, new { @id = "hiddCurrentY"})
+                            @Html.HiddenFor(model => model.FloorId, new { @id = "txtFloorId"})
+                            @Html.HiddenFor(model => model.FloorAdmId, new { @id = "txtFloorAdmId"})
+                            @Html.HiddenFor(model => model.FloorMapJSON, new { @id = "txtFloorJSON"})
+                            @Html.HiddenFor(model => model.FloorMapId, new { @id = "hiddFloorMapId"})
+                            @Html.HiddenFor(model => model.Id, new { @id = "hiddId"})
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dvUserDtls" aria-labelledby="dvUserDtls" class="modal fade" role="dialog"
+         data-backdrop="static" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">利用者情報</h4>
+                    <button aria-label="Close" class="close" type="button" onclick="CloseUserDtls();">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">プロフィール写真</label>
+                                <div class="controls">
+                                    <img id="ImgUserDtls" src="~/users.jpg" width="100px" height="100px" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">利用者名</label>
+                                <div class="controls">
+                                    <span id="spUserNameDtls"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="CloseUserDtls();">
+                            <i class="fa fa-remove"></i>
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dvWFHUser" aria-labelledby="dvWFHUser" class="modal fade" role="dialog"
+         data-backdrop="none" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">在宅勤務中のユーザ</h4>
+                    <button aria-label="Close" class="close" type="button" onclick="CloseWFHUsers()">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="tblAllWFHUsersUnderHM" class="display table table-hover table-condensed tblAllWFHUsersUnderHM" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">Sr No</th>
+                                        <th width="90%">氏名</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in AllWFHUsersUnderHM | orderBy: 'RowId' | itemsPerPage: pageSize | record:'currentPage':this"
+                                        pagination-id="tblAllWFHUsersUnderHM" ng-if="AllWFHUsersUnderHM.length > 0">
+                                        <td ng-bind="item.RowId"></td>
+                                        <td ng-bind="item.Name"></td>
+                                    </tr>
+                                    <tr ng-if="AllWFHUsersUnderHM.length == 0">
+                                        <td colspan="2">
+                                            <span class="text text-danger">該当する情報はありません。</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="text-center pull-right" ng-if="AllWFHUsersUnderHM.length > 0">
+                                                <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"
+                                                                         template-url="@Url.Content("~/dirpagination.tpl.html")"
+                                                                         pagination-id="tblAllWFHUsersUnderHM">
+                                                </dir-pagination-controls>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

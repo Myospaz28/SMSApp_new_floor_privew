@@ -1,0 +1,204 @@
+﻿@model SMSApp.Models.SC.UserAccessSC
+
+@{
+    ViewBag.Title = "UserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/Appjs/UserAccess/UserAccessForm.js"></script>
+
+<script type="text/javascript">
+
+    function OnUserAccessSuccess(data) {
+
+        if (data.isSuccess == "N") {
+            $("#dvErrors").html(data.errorMessage);
+        }
+        else {
+            swal({
+                title: "SUCCESS!",
+                text: "正常に完了しました。",
+                type: "success",
+                confirmButtonText: "OK"
+            },
+                function (isConfirm) {
+                    window.location.href = '@Url.Action("Index","UserAccess")';
+                });
+        }
+    }
+
+    function RedirectBack() {
+
+        window.location.href = '@Url.Action("Index","UserAccess")';
+
+        return false;
+    }
+
+</script>
+
+<div ng-controller="UserAccessFormCtrl">
+    <form action="/UserAccess/SaveUserAccess" data-ajax="true" data-ajax-failure="OnFailure"
+          data-ajax-method="POST" data-ajax-success="OnUserAccessSuccess" id="form0" method="post" enctype="multipart/form-data">
+
+        <div class="col-12 PageMargin">
+            <section class="box">
+                <header class="panel_header">
+                    @if (Model != null && Model.UserAccessId != null)
+                    {
+                        <h2 class="title float-left">権限管理</h2>
+                    }
+                    else
+                    {
+                        <h2 class="title float-left">権限管理</h2>
+                    }
+                </header>
+                <div class="content-body">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label title">
+                                    フロア
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @if (Model != null && Model.FloorId != null)
+                                    {
+                                        @Html.DisplayFor(model => model.FloorName,new { @id = "txtFloor"})
+                                        @Html.HiddenFor(model => model.FloorId,new { @id = "hiddFloor"})
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group sm-3">
+                                            <select id="ddlFloor" class="form-control ddlSelect2Single" ng-model="FloorId" on-Finish-Render>
+                                                <option ng-value="'0'">--Select--</option>
+                                                <option ng-selected="FloorId == item.FloorId" ng-repeat="item in FloorList" ng-value="item.FloorId">
+                                                    {{item.FloorName}}
+                                                </option>
+                                            </select>
+                                            <div id="dvErrors" class="text-danger">
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    権限管理メモ
+                                </label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.FloorDesc, new { @class = "form-control", @placeholder = "権限管理メモ", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    ユーザの選択
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    <div class="input-group sm-3">
+                                        <select id="ddlUser" class="form-control ddlSelect2Single" ng-model="UserId" on-Finish-Render>
+                                            <option ng-value="'0'">--Select--</option>
+                                            <option ng-repeat="item in UserAccessList" ng-value="item.UserId">
+                                                {{item.Name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <button type="button" ng-click="AddUsersList()">
+                                        <span class="fa fa-plus"></span>
+                                        追加
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    ステータス
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.RadioButtonFor(model => model.IsActive, "1", new { @id = "rdoStatusActive", @checked = "checked" })
+                                    <label class="form-label" for="rdoStatusActive">有効</label>
+                                    @Html.RadioButtonFor(model => model.IsActive, "0", new { @id = "rdoStatusInActive" })
+                                    <label class="form-label" for="rdoStatusInActive">無効</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12">
+                            <table id="example-11" class="display table-sm table-sm table-bordered" cellspacing="0" width="100%">
+                                <colgroup>
+                                    <col wdith="3%" />
+                                    <col wdith="55%" />
+                                    <col wdith="35%" />
+                                    <col wdith="*" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th width="10%">Sr No</th>
+                                        <th width="45%">ユーザ名</th>
+                                        <th width="35%">権限種別</th>
+                                        <th width="10%">ユーザ削除</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in AllMapUsers|filter: { IsType : '!D' }" ng-if="AllMapUsers.length > 0">
+                                        <td ng-bind="item.RowId"></td>
+                                        <td ng-bind="item.UserName"></td>
+                                        <td>
+                                            <label for="lblView{{item.RowId}}">
+                                                <input id="lblView{{item.RowId}}" ng-model="item.Select" value="Vw" type="radio" name="search-type{{item.RowId}}">
+                                                参照
+                                            </label>
+                                            <label for="UseANDView{{item.RowId}}">
+                                                <input id="UseANDView{{item.RowId}}" ng-model="item.Select" value="UVw" type="radio" name="search-type{{item.RowId}}">
+                                                利用者
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm" type="button" ng-click="RemoveUser(item.RowId);">
+                                                <span class="fa fa-remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="AllMapUsers.length == 0">
+                                        <td colspan="4">
+                                            <span class="text text-danger">該当する情報はありません</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12 col-md-9 col-lg-8 padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary" onclick="return SaveUserAccess();">
+                                    <span class="fa fa-save"></span>
+                                    保存
+                                </button>
+                                <button type="button" class="btn" onclick="return RedirectBack();">
+                                    <span class="fa fa-undo"></span>
+                                    戻る
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div>
+            @Html.HiddenFor(model => model.UserAccessId, new { @id = "txtUserAccessId"})
+            @Html.HiddenFor(model => model.FloorId, new { @id = "txtFloorId"})
+            @Html.HiddenFor(model => model.UserJSON, new { @id = "txtUserJSON"})
+        </div>
+    </form>
+</div>

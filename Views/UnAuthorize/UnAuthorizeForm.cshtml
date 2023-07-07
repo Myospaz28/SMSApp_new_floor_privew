@@ -1,0 +1,27 @@
+﻿@model SMSApp.Models.SC.ControllerMapSC
+
+@{
+    ViewBag.Title = "UnAuthorize";
+    Layout = null;
+}
+
+<script type="text/javascript">
+    function RedirectFloorList() {
+        window.location.href = "@Url.Action("Index","Floor")";
+    }
+
+</script>
+
+<div style="border:1px;font-size:15px;color:lightcoral;align-content:center;margin:20px !important;font-weight:bold">
+
+    認証失敗。システム管理者へ問い合わせしてください。
+    <br />
+    <br />
+
+    前の画面に戻るのに
+    <button type="button" onclick="return RedirectFloorList();">
+        ここ
+    </button>
+    にクリックしてください。
+
+</div>

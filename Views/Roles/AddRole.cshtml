@@ -1,0 +1,85 @@
+﻿@model SMSApp.Models.SC.RolesSC
+
+@{
+    ViewBag.Title = "UserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script type="text/javascript">
+
+    function OnRoleSuccess() {
+        swal({
+            title: "SUCCESS!",
+            text: "正常に完了しました。",
+            type: "success",
+            confirmButtonText: "OK"
+        },
+            function (isConfirm) {
+                window.location.href = '@Url.Action("Index","Roles")';
+            });
+    }
+
+    function RedirectBack() {
+
+        window.location.href = '@Url.Action("Index","Roles")';
+
+        return false;
+    }
+
+</script>
+
+<form action="/Roles/SaveRole" data-ajax="true" data-ajax-failure="OnFailure"
+      data-ajax-method="POST" data-ajax-success="OnRoleSuccess" id="form0" method="post">
+
+    <div class="col-12">
+        <section class="box">
+            <header class="panel_header">
+                <h2 class="title float-left">役割マスタ</h2>
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                役割
+                                <span class="text text-danger">*</span>
+                            </label>
+                            <span class="desc"></span>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.RoleName, new { @class = "form-control", @placeholder = "Enter Role Name", @autocomplete = "off" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                ステータス
+                                <span class="text text-danger">*</span>
+                            </label>
+                            <div class="controls">
+                                @Html.RadioButtonFor(model => model.Status, "1", new { @id = "rdoStatusActive", @checked = "checked" })
+                                <label class="form-label" for="rdoStatusActive">有効</label>
+                                @Html.RadioButtonFor(model => model.Status, "0", new { @id = "rdoStatusInActive" })
+                                <label class="form-label" for="rdoStatusInActive">無効</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-9 col-lg-8 padding-bottom-30">
+                        <div class="text-left">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn" onclick="return RedirectBack();">キャンセル</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div>
+        @Html.HiddenFor(model => model.RoleId)
+    </div>
+</form>

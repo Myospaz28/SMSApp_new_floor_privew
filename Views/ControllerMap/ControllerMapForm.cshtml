@@ -1,0 +1,171 @@
+﻿@model SMSApp.Models.SC.ControllerMapSC
+
+@{
+    ViewBag.Title = "UserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/AppJs/ControllerMap/ControllerMapForm.js"></script>
+
+<script type="text/javascript">
+
+    function OnUserSuccess(data) {
+
+        swal({
+            title: "SUCCESS!",
+            text: "正常に完了しました。",
+            type: "success",
+            confirmButtonText: "OK"
+        },
+            function (data) {
+                window.location.href = '@Url.Action("Index","ControllerMap")';
+            });
+    }
+
+    function RedirectBack() {
+
+        window.location.href = '@Url.Action("Index","ControllerMap")';
+
+        return false;
+    }
+
+</script>
+
+<div ng-controller="ControllerMapFormCtrl" class="PageMargin">
+
+    <form action="/ControllerMap/SaveControllerMap" data-ajax="true" data-ajax-failure="OnFailure"
+          data-ajax-method="POST" data-ajax-success="OnUserSuccess" id="form0" method="post">
+
+        <div class="col-12">
+            <section class="box">
+                <header class="panel_header">
+                    @if (Model != null && Model.ControllerMapId != null)
+                    {
+                        <h2 class="title float-left">管理部門を編集</h2>
+                    }
+                    else
+                    {
+                        <h2 class="title float-left">管理部門の登録</h2>
+                    }
+                    <br />
+                    <span class="pull-right text-danger" style="margin-right:10px !important">(*) 必須</span>
+                </header>
+                <div class="content-body">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label title">
+                                    管理部門名
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.ControllerName, new { @class = "form-control", @placeholder = "管理部門名を入力", @autocomplete = "off" })
+                                    <div class="text-danger">
+                                        @Html.ValidationMessageFor(model => model.ControllerName)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    管理部門詳細
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.ControllerDesc, new { @class = "form-control", @placeholder = "管理部門詳細を入力", @autocomplete = "off" })
+                                    <div class="text-danger">
+                                        @Html.ValidationMessageFor(model => model.ControllerDesc)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    部門管理者を選択
+                                </label>
+                                <div class="controls">
+                                    <div class="input-group sm-3">
+                                        <select class="form-control ddlSelect2Single" id="ddlFloor" on-Finish-Render>
+                                            <option ng-value="0">--Select--</option>
+                                            <option ng-repeat="item in FloorList" ng-value="item.FloorId">{{item.FloorName}}</option>
+                                        </select>
+                                        <button type="button" ng-click="AddFloor();">
+                                            <span class="fa fa-plus"></span>
+                                            追加
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    ステータス
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.RadioButtonFor(model => model.Status, "1", new { @id = "rdoStatusActive", @checked = "checked" })
+                                    <label class="form-label" for="rdoStatusActive">有効</label>
+                                    @Html.RadioButtonFor(model => model.Status, "0", new { @id = "rdoStatusInActive" })
+                                    <label class="form-label" for="rdoStatusInActive">無効</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12" ng-if="FormFloorList.length > 0">
+                            <table id="example-11" class="display table-sm table-sm table-bordered" cellspacing="0" width="100%">
+                                <colgroup>
+                                    <col width="10%" />
+                                    <col width="65%" />
+                                    <col width="*" />
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>Sr No</th>
+                                        <th>管理者</th>
+                                        <th class="text text-center">Action </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in FormFloorList|filter:{IsType : '!D'}">
+                                        <td ng-bind="item.RowId"></td>
+                                        <td ng-bind="item.FloorName"></td>
+                                        <td class="text text-center">
+                                            <button class="btn btn-sm" type="button" ng-click="RemoveUser(item.RowId);">
+                                                <span class="fa fa-remove"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-12 col-md-9 col-lg-8 padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary" onclick="return SaveControllerMap();">
+                                    <span class="fa fa-save"></span>
+                                    保存
+                                </button>
+                                <button type="button" class="btn" onclick="return RedirectBack();">
+                                    <span class="fa fa-undo"></span>
+                                    戻る
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div>
+            @Html.HiddenFor(model => model.ControllerMapId, new { @id = "txtControllerMapId"})
+            @Html.HiddenFor(model => model.FloorListJson, new { @id = "txtFloorListJson"})
+        </div>
+    </form>
+</div>

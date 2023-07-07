@@ -1,0 +1,107 @@
+Attempted to divide by zero.
+   at SMSApp.Controllers.FloorController.SaveFloor(FloorSC vFloorSC) in D:\Apps\Seat Management System\SMSApp\Controllers\FloorController.cs:line 56D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\41.pngD:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\41.pngD:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\41.pngD:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\41.png12D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\12.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\12.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\12.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\12.jpeg
+13D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\13.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\13.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\13.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\13.jpeg
+14D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\14.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\14.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\14.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\14.jpeg
+48D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\48.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\48.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\48.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\48.jpeg
+15D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\15.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\15.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\15.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\15.jpeg
+16D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\16.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\16.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\16.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\16.jpeg
+51D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\51.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\51.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\51.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\51.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\17.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\17.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\17.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\17.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\18.jpg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\18.jpg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\18.jpg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\18.jpg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\19.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\19.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\19.jpeg
+D:\Apps\Seat Management System\SMSApp\wwwroot\Uploads\FloorImage\19.jpeg
+Cannot insert the value NULL into column 'FloorName', table 'DB_SMS.Masters.tbl_Floor'; column does not allow nulls. INSERT fails.
+The statement has been terminated.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   at Microsoft.Practices.EnterpriseLibrary.Data.Database.ExecuteScalar(DbCommand command)
+   at SMSApp.Models.DAL.FloorDAL.SaveFloor(FloorSC vUserSC) in D:\Apps\Seat Management System\SMSApp\Models\DAL\FloorDAL.cs:line 46
+   at WebTemplate.Models.BLL.FloorBLL.SaveFloor(ImageSC vImageSC, FloorSC vFloorSC, IConfiguration _configuration) in D:\Apps\Seat Management System\SMSApp\Models\BLL\FloorBLL.cs:line 34
+   at SMSApp.Controllers.FloorController.SaveFloorData(FloorSC vFloorSC) in D:\Apps\Seat Management System\SMSApp\Controllers\FloorController.cs:line 86Cannot insert the value NULL into column 'IsActive', table 'DB_SMS.Masters.tbl_Floor'; column does not allow nulls. INSERT fails.
+The statement has been terminated.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   at Microsoft.Practices.EnterpriseLibrary.Data.Database.ExecuteScalar(DbCommand command)
+   at SMSApp.Models.DAL.FloorDAL.SaveFloor(FloorSC vUserSC) in D:\Apps\Seat Management System\SMSApp\Models\DAL\FloorDAL.cs:line 46
+   at WebTemplate.Models.BLL.FloorBLL.SaveFloor(ImageSC vImageSC, FloorSC vFloorSC, IConfiguration _configuration) in D:\Apps\Seat Management System\SMSApp\Models\BLL\FloorBLL.cs:line 34
+   at SMSApp.Controllers.FloorController.SaveFloorData(FloorSC vFloorSC) in D:\Apps\Seat Management System\SMSApp\Controllers\FloorController.cs:line 86Cannot insert the value NULL into column 'IsActive', table 'DB_SMS.Masters.tbl_Floor'; column does not allow nulls. INSERT fails.
+The statement has been terminated.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   at Microsoft.Practices.EnterpriseLibrary.Data.Database.ExecuteScalar(DbCommand command)
+   at SMSApp.Models.DAL.FloorDAL.SaveFloor(FloorSC vUserSC) in D:\Apps\Seat Management System\SMSApp\Models\DAL\FloorDAL.cs:line 46
+   at WebTemplate.Models.BLL.FloorBLL.SaveFloor(ImageSC vImageSC, FloorSC vFloorSC, IConfiguration _configuration) in D:\Apps\Seat Management System\SMSApp\Models\BLL\FloorBLL.cs:line 34
+   at SMSApp.Controllers.FloorController.SaveFloorData(FloorSC vFloorSC) in D:\Apps\Seat Management System\SMSApp\Controllers\FloorController.cs:line 86The UPDATE statement conflicted with the FOREIGN KEY constraint "FK_tbl_Floor_tbl_ControllerMap". The conflict occurred in database "DB_SMS", table "Masters.tbl_ControllerMap", column 'ControllerId'.
+The statement has been terminated.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   at Microsoft.Practices.EnterpriseLibrary.Data.Database.ExecuteScalar(DbCommand command)
+   at SMSApp.Models.DAL.FloorDAL.SaveFloor(FloorSC vUserSC) in D:\Apps\Seat Management System\SMSApplication\SMSApp\Models\DAL\FloorDAL.cs:line 50
+   at WebTemplate.Models.BLL.FloorBLL.SaveFloor(ImageSC vImageSC, FloorSC vFloorSC, IConfiguration _configuration) in D:\Apps\Seat Management System\SMSApplication\SMSApp\Models\BLL\FloorBLL.cs:line 34
+   at SMSApp.Controllers.FloorController.SaveFloorData(FloorSC vFloorSC) in D:\Apps\Seat Management System\SMSApplication\SMSApp\Controllers\FloorController.cs:line 107The UPDATE statement conflicted with the FOREIGN KEY constraint "FK_tbl_Floor_tbl_ControllerMap". The conflict occurred in database "DB_SMS", table "Masters.tbl_ControllerMap", column 'ControllerId'.
+The statement has been terminated.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at System.Data.SqlClient.SqlDataReader.get_MetaData()
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds)
+   at System.Data.SqlClient.SqlCommand.ExecuteScalar()
+   at Microsoft.Practices.EnterpriseLibrary.Data.Database.ExecuteScalar(DbCommand command)
+   at SMSApp.Models.DAL.FloorDAL.SaveFloor(FloorSC vUserSC) in D:\Apps\Seat Management System\SMSApplication\SMSApp\Models\DAL\FloorDAL.cs:line 50
+   at WebTemplate.Models.BLL.FloorBLL.SaveFloor(ImageSC vImageSC, FloorSC vFloorSC, IConfiguration _configuration) in D:\Apps\Seat Management System\SMSApplication\SMSApp\Models\BLL\FloorBLL.cs:line 34
+   at SMSApp.Controllers.FloorController.SaveFloorData(FloorSC vFloorSC) in D:\Apps\Seat Management System\SMSApplication\SMSApp\Controllers\FloorController.cs:line 107

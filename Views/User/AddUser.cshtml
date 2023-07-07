@@ -1,0 +1,280 @@
+﻿@model SMSApp.Models.SC.UserSC
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string? mActionName = ViewContext.RouteData.Values["action"].ToString();
+
+    string? mUserId = string.Empty;
+
+    mUserId = ViewContext.RouteData.Values["Id"] == null ? "0" : ViewContext.RouteData.Values["Id"].ToString();
+
+}
+
+<script type="text/javascript">
+    var mUserId = '@mUserId';
+</script>
+
+<script src="~/js/appjs/user/userform.js"></script>
+
+<script type="text/javascript">
+
+    function OnUserSuccess(data) {
+
+        var mPageType = data.pageType;
+
+        swal({
+            title: "SUCCESS!",
+            text: "正常に完了しました。",
+            type: "success",
+            confirmButtonText: "OK"
+        },
+            function (isConfirm) {
+                if (mPageType == "User") {
+                    window.location.href = '@Url.Action("Index","User")';
+                }
+                else {
+                    window.location.href = '@Url.Action("Index","Home")';
+                }
+            });
+    }
+
+    function RedirectBack() {
+
+        window.location.href = '@Url.Action("Index","User")';
+
+        return false;
+    }
+
+</script>
+
+<div ng-controller="UserFormCtrl">
+
+    <form action="/User/SaveUser" data-ajax="true" data-ajax-failure="OnFailure"
+          data-ajax-method="POST" data-ajax-success="OnUserSuccess" id="form0" method="post" enctype="multipart/form-data">
+        <div class="col-12 PageMargin">
+            <section class="box">
+                <header class="panel_header">
+                    @if (Model != null)
+                    {
+                        <h2 class="title float-left">ユーザ情報の変更</h2>
+                    }
+                    else
+                    {
+                        <h2 class="title float-left">ユーザ登録</h2>
+                    }
+                    <br />
+                    <span class="pull-right text-danger" style="margin-right:10px !important">(*) 必須</span>
+                </header>
+                <div class="content-body">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    姓（漢字）
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.LNKanji, new { @class = "form-control", @placeholder = "姓（漢字）", @autocomplete = "off" })
+                                    <div class="text-danger">
+                                        @Html.ValidationMessageFor(model => model.LNKanji)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label title">
+                                    名（漢字）
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.FNKanji, new { @class = "form-control", @placeholder = "名（漢字）", @autocomplete = "off" })
+                                    <div class="text-danger">
+                                        @Html.ValidationMessageFor(model => model.FNKanji)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">姓（かな）</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.LNFurigana, new { @class = "form-control", @placeholder = "姓（かな）", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">姓（かな）</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.FNFurigana, new { @class = "form-control", @placeholder = "姓（かな）", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">姓（ローマ字）</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.LNRomaji, new { @class = "form-control", @placeholder = "姓（ローマ字）", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">名（ローマ字）</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.FNRomaji, new { @class = "form-control", @placeholder = "名（ローマ字）", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model != null && Model.PageType != "Prof")
+                    {
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        ユーザID
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.Username, new { @class = "form-control", @placeholder = "Enter ユーザID", @autocomplete = "off" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.Username)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">パスワード </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.Password, new { @type="password", @class = "form-control", @placeholder = "Enter Password", @autocomplete = "off" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.Password)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">所属</label>
+                                <div class="controls">
+                                    <select id="ddlDept" class="form-control ddlSelect2Single" ng-model="DeptId" onchange="OnDeptSel();" on-Finish-Render>
+                                        <option ng-value="'0'">--Select--</option>
+                                        <option ng-selected="DeptId == item.DeptId" ng-repeat="item in DeptList" ng-value="item.DeptId">
+                                            {{item.DeptName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        @if (Model != null && Model.PageType != "Prof")
+                        {
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        ステータス
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.RadioButtonFor(model => model.Status, "1", new { @id = "rdoStatus"})
+                                        <label class="form-label" for="rdoStatusActive">有効</label>
+                                        @Html.RadioButtonFor(model => model.Status, "0", new { @id = "rdoStatus" })
+                                        <label class="form-label" for="rdoStatusInActive">無効</label>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">プロフィール写真</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.ProfilePhoto, new { @type="file", @class = "form-control" })
+
+                                    @if (Model != null && Model.ProfilePhotoPath != null)
+                                    {
+                                        <a href="@Url.Content(Model.ProfilePhotoPath)">
+                                            @Model.ProfilePhotoName
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">表示名</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.UserDisplayName, new { @class = "form-control",@placeholder = "User Display Name" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">役職</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.UserTitle, new { @class = "form-control",@placeholder = "User Title" })
+                                </div>
+                            </div>
+                        </div>
+                        @if (mActionName != "New")
+                        {
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">ホームマップの選択</label>
+                                    <div class="controls">
+                                        <select id="ddlHomeMap" class="form-control ddlSelect2Single" ng-model="MapId" onchange="OnMapFloorSel();" on-Finish-Render>
+                                            <option ng-value="'0'">--Select--</option>
+                                            <option ng-selected="MapId == item.FloorId" ng-repeat="item in AllMapFloorList" ng-value="item.FloorId">
+                                                {{item.FloorName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-9 col-lg-8 padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary" onclick="return SaveUser();">
+                                    <span class="fa fa-save"></span>
+                                    保存
+                                </button>
+                                <button type="button" class="btn" onclick="return RedirectBack();">
+                                    <span class="fa fa-undo"></span>
+                                    戻る
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div>
+            @Html.HiddenFor(model => model.RoleId, new { @id = "txtRoleId"})
+            @Html.HiddenFor(model => model.FloorId, new { @id = "txtFloor1Id"})
+            @Html.HiddenFor(model => model.DeptId, new { @id = "txtDeptId"})
+            @Html.HiddenFor(model => model.FloorSelect, new { @id = "txtFloorSelect"})
+            @Html.HiddenFor(model => model.HomeMapId, new { @id = "txtHomeMapId"})
+            @Html.HiddenFor(model => model.UserId)
+            @Html.HiddenFor(model => model.ImgId)
+            @Html.HiddenFor(model => model.PageType)
+        </div>
+    </form>
+
+</div>

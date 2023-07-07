@@ -1,0 +1,244 @@
+﻿@model SMSApp.Models.SC.SeatSearchSC
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+    string mCurrUserId = string.Empty;
+    if (ViewBag.UserId != null)
+    {
+        mCurrUserId = ViewBag.UserId.ToString();
+    }
+
+    string FloorMapId = string.Empty;
+    if (ViewBag.FloorMapId != null)
+    {
+        FloorMapId = ViewBag.FloorMapId.ToString();
+    }
+
+    //string? mFloorId = string.Empty;
+    //if (Context.Request.Query.TryGetValue("id", out queryVal))
+    //{
+    //    mFloorId = queryVal.FirstOrDefault();
+    //}
+}
+
+<script type="text/javascript">
+    var mCurrUserId = '@mCurrUserId';
+    var mFloorMapId = '@FloorMapId';
+</script>
+
+<script src="~/js/appjs/seatbook/seatbooksearch.js"></script>
+
+<div ng-controller="SeatBookSearchCtrl">
+    <div class="col-xl-12 PageMargin">
+        <section class="box ">
+            <header class="panel_header">
+                <h2 class="title float-left" style="width:100% !important">
+                    <span>状況検索</span>
+                </h2>
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row" style="border:1px solid black">
+                            <div class="col-1 col-md-1 col-lg-1" style="margin-top : 5px !important">
+                                <input type="radio" id="rdSearchName" name="rdSearch" value="Name" ng-model="Search" ng-change="OnSeatBookSearchChange();DisabledOthField();" />
+                            </div>
+                            <div class="col-5 col-md-5 col-lg-5" style="margin-top : 5px !important">
+                                <div class="form-group">
+                                    <label class="form-label title" for="rdSearchName" style="cursor:pointer">利用者検索</label>
+                                    <div class="controls">
+                                        <div class="input-group sm-3">
+                                            <input id="txtLastName" type="text" class="form-control txtLastName" placeholder="Enter 姓（漢字）..." />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6" style="margin-top : 5px !important">
+                                <div class="form-group">
+                                    <label class="form-label title"></label>
+                                    <div class="controls" style="margin-top:12px !important">
+                                        <div class="input-group sm-3">
+                                            <input id="txtFirstName" type="text" class="form-control txtFirstName" placeholder="Enter 名（漢字）..." />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="col-3 col-md-6 col-lg-2">
+                    <div class="form-group">
+                    <label class="form-label title"></label>
+                    <div class="controls">
+                    <div class="input-group sm-3" style="margin-top:12px !important">
+                    <button type="button" class="btn btn-primary" ng-click="SeatBookSearchList('Name');">
+                    <span class="fa fa-search"></span>
+                    検索
+                    </button>
+                    </div>
+                    </div>
+                    </div>
+                    </div>*@
+                    <div class="col-md-6">
+                        <div class="row" style="border:1px solid black;margin-left:2px">
+                            <div class="col-1 col-md-1 col-lg-1" style="margin-top : 5px !important">
+                                <input type="radio" id="rdSearchFlR" name="rdSearch" value="FLR" ng-model="Search" ng-change="OnSeatBookSearchChange();DisabledOthField();" />
+                            </div>
+                            <div class="col-11 col-md-11 col-lg-11" style="margin-top : 5px !important">
+                                <div class="form-group">
+                                    <label class="form-label title" for="rdSearchFlR" style="cursor:pointer">
+                                        フロア状況検索（フロアに出社しているユーザを表示）
+                                    </label>
+                                    <div class="controls">
+                                        <div class="input-group sm-3">
+                                            <select id="ddlFloor" class="form-control ddlSelect2Single" ng-model="FloorId" on-Finish-Render>
+                                                <option ng-value="'0'">--Select--</option>
+                                                <option ng-repeat="item in FloorList" ng-value="item.FloorId">
+                                                    {{item.FloorName}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* <div class="col-4 col-md-4 col-lg-2">
+                    <div class="form-group">
+                    <label class="form-label title"></label>
+                    <div class="controls">
+                    <div class="input-group sm-3" style="margin-top:12px !important">
+                    <button type="button" class="btn btn-primary" ng-click="SeatBookSearchList('FLR');">
+                    <span class="fa fa-search"></span>
+                    検索
+                    </button>
+                    </div>
+                    </div>
+                    </div>
+                    </div>*@
+                </div>
+                <div class="row" style="margin-top:12px">
+                    <div class="col-md-6" style="border:1px solid black;">
+                        <div class="row">
+                            <div class="col-1 col-md-1 col-lg-1" style="margin-top:2px">
+                                <input type="radio" id="rdSearchDPT" name="rdSearch" value="DPT" ng-model="Search" ng-change="OnSeatBookSearchChange();DisabledOthField();" />
+                            </div>
+                            <div class="col-11 col-md-11 col-lg-11" style="margin-top:3px">
+                                <div class="form-group">
+                                    <label class="form-label title" for="rdSearchDPT" style="cursor:pointer">所属部門</label>
+                                    <div class="controls">
+                                        <div class="input-group">
+                                            <select id="ddlDept" class="form-control ddlSelect2Single" on-Finish-Render ng-model="DeptId">
+                                                <option ng-value="'0'">--Select--</option>
+                                                <option ng-repeat="item in DeptList" ng-value="item.DeptId">
+                                                    {{item.DeptName}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label class="form-label title"></label>
+                                    <div class="controls">
+                                        <button type="button" class="btn btn-primary" ng-click="SeatBookSearchList();">
+                                            <span class="fa fa-search"></span>
+                                            検索
+                                        </button>
+                                        <button type="button" class="btn btn-primary" ng-click="ResetSeatBookSearchChange();">
+                                            <span class="fa fa-refresh"></span>
+                                            リセット
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-12">
+                        <table id="example-11" class="display table table-hover table-condensed" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="6%">Sr No</th>
+                                    <th width="12%">登録状況</th>
+                                    <th width="12%">氏名</th>
+                                    <th width="12%">フロア名</th>
+                                    <th width="10%">座席ID</th>
+                                    <th width="15%">座席詳細</th>
+                                    <th width="5%">表示</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*<tr ng-repeat="item in SeatBookSearchLst" ng-if="SeatBookSearchLst.length > 0">*@
+                                <tr dir-paginate="item in SeatBookSearchLst | orderBy: 'RowId' | itemsPerPage: pageSize | record:'currentPage':this"
+                                    pagination-id="tblSeatBookSearchLst">
+                                    <td>
+                                        <span ng-bind="item.RowId"></span>
+                                    </td>
+                                    <td ng-bind="item.BookType"></td>
+                                    <td ng-bind="item.Name"></td>
+                                    <td ng-bind="item.FloorName"></td>
+                                    <td ng-bind="item.SeatId"></td>
+                                    <td ng-bind="item.SeatDetails"></td>
+                                    <td class="text text-center">
+                                        @*<span style="cursor:pointer" ng-click="ViewSeat(item.FloorId,item.FloorMapId);" ng-show="item.BookType == '登録済み'">
+                                        <i class="fa fa-eye"></i>
+                                        </span>*@
+                                        <span style="cursor:pointer" ng-click="OpenSeat(item.FloorId,item.FloorMapId);" ng-show="item.BookType == '登録済み'">
+                                            <i class="fa fa-eye"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr ng-if="SeatBookSearchLst.length == 0">
+                                    <td colspan="7">
+                                        <span class="text text-danger">該当する情報はありません。</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="text-center pull-right">
+                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"
+                                                                     template-url="@Url.Content("~/dirpagination.tpl.html")"
+                                                                     pagination-id="tblSeatBookSearchLst">
+                                            </dir-pagination-controls>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="dvSearchModal" aria-labelledby="dvSearchModal" class="modal fade dvSearchModal" role="dialog"
+                     data-backdrop="static" aria-modal="true" style="display: none;" name="dvSearchModal">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">座標の登録</h4>
+                                <button aria-label="Close" class="close" type="button" data-dismiss="modal">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="dvDisplaySrch" name="dvDisplaySrch">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</div>

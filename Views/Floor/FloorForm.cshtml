@@ -1,0 +1,364 @@
+﻿@model SMSApp.Models.SC.FloorSC
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Http;
+@using System.IO;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string? mRoleCode = string.Empty;
+    string? mUserId = string.Empty;
+    string[] mFloorAllImg = { };
+    string mFloorImg = string.Empty;
+
+    mRoleCode = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value;
+    mUserId = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+}
+
+<script src="~/js/appjs/floor/floorform.js"></script>
+
+<script type="text/javascript">
+
+    var mCurrUserId = '@mUserId';
+
+    function OnUserSuccess(data) {
+
+        if (data.isSuccess == "N") {
+            $("#dvErrors").html(data.errorMessage);
+        }
+        else {
+
+            if (data.isFile == "Y") {
+                $("#FlrImg").attr("src", "");
+                $("#FlrImg").attr("src", "/Uploads/FloorTempImage/" + mCurrUserId + "/" + data.fileName);
+            }
+            else {
+                swal({
+                    title: "SUCCESS!",
+                    text: "正常に完了しました。",
+                    type: "success",
+                    confirmButtonText: "OK"
+                },
+                    function (isConfirm) {
+                        window.location.href = '@Url.Action("Index","Floor")';
+                    });
+            }
+        }
+    }
+
+    function OnUserFailure(data) {
+        alert(JSON.stringify(data));
+    }
+
+    function RedirectBack() {
+        window.location.href = '@Url.Action("Index","Floor")';
+        return false;
+    }
+
+    function OnFloorImageChng() {
+        $("#btnUpload").click();
+    }
+
+</script>
+
+<div ng-controller="FloorFormCtrl">
+
+    <form action="/Floor/SaveFloorData" data-ajax="true" data-ajax-success="OnUserSuccess" data-ajax-failure="OnUserFailure"
+          data-ajax-method="POST" id="form0" method="post" enctype="multipart/form-data">
+
+        <div class="col-12">
+            <section class="box">
+                <header class="panel_header">
+                    @if (Model != null)
+                    {
+                        <h2 class="title float-left">フロア情報の編集</h2>
+                    }
+                    else
+                    {
+                        <h2 class="title float-left">フロア登録</h2>
+                    }
+                    <h2 class="title float-left"> - @Html.DisplayFor(model => model.ControllerName)</h2>
+                    <span class="pull-right text-danger" style="margin-right:10px !important">(*) 必須</span>
+                </header>
+                <div class="content-body">
+
+                    @*@if (mRoleCode == "SystemAdm")
+                    {
+                    <div class="row">
+                    <div class="col-6 col-md-6 col-lg-6">
+                    <div class="form-group">
+                    <label class="form-label title">
+                    管理部門
+                    <span class="text text-danger">*</span>
+                    </label>
+                    <div class="controls">
+                    <select id="ddlController" class="form-control ddlSelect2Single" ng-model="ControllerId" onchange="OnControllerSel();" on-Finish-Render>
+                    <option ng-selected="ControllerId == item.ControllerId" ng-value="0">--Select--</option>
+                    <option ng-selected="ControllerId == item.ControllerId" ng-repeat="item in ControllerList" ng-value="item.ControllerId">
+                    {{item.ControllerName}}
+                    </option>
+                    </select>
+                    <div id="dvErrors" class="text-danger">
+                    @Html.ValidationMessageFor(model => model.ControllerId)
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    </div>
+                    }*@
+
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label title">
+                                    フロア名
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.FloorName, new { @class = "form-control", @placeholder = "フロア名", @autocomplete = "off" })
+                                    <div class="text-danger">
+                                        @Html.ValidationMessageFor(model => model.FloorName)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">詳細</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.FloorDesc, new { @class = "form-control", @placeholder = "詳細", @autocomplete = "off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    フロアレイアウト画像
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+
+                                    @Html.TextBoxFor(model => model.FloorImage, new { @type="file", @class = "form-control",@onchange="OnFloorImageChng();" })
+
+                                    @if (Model != null && Model.ImageName != null)
+                                    {
+                                        <a href="@Url.Content(Model.ImagePath)">
+                                            @Model.ImageName
+                                        </a>
+                                    }
+
+                                    <br />
+                                    <span class="text text-danger">
+                                        レイアウト画像を変更した場合、フロアの利用者は退席されます。
+
+                                    </span>
+
+                                    <div id="dvErrors" class="text-danger">
+                                        @Html.ValidationMessageFor(model => model.FloorImage)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">ユーザ名表示フォントサイズ</label>
+                                <div class="controls">
+                                    @Html.TextBoxFor(model => model.UsernameFontsize, new { @id="txtUserFontSize", @class = "form-control" ,@value = "12"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">バージョン</label>
+                                <div class="controls">
+                                    @Html.DisplayFor(model => model.RevNO)
+                                    @Html.HiddenFor(model => model.RevNO)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    ステータス
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    @Html.RadioButtonFor(model => model.Status, "1", new { @id = "rdoStatus"})
+                                    <label class="form-label" for="rdoStatusActive">有効</label>
+                                    @Html.RadioButtonFor(model => model.Status, "0", new { @id = "rdoStatus" })
+                                    <label class="form-label" for="rdoStatusInActive">無効</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-4 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    座席指定初期値縦幅
+                                    <span class="text text-danger">*</span>
+                                </label>
+                                <div class="controls">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @Html.TextBoxFor(model => model.Height, new { @id = "txtHeight", @class = "form-control" ,@placeholder = "Enter Height"})
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.TextBoxFor(model => model.Width, new { @id = "txtWidth", @class = "form-control" ,@placeholder = "Enter Width"})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="col-1 col-md-1 col-lg-1">
+                        <div class="controls">
+                        </div>
+                        </div>
+                        <div class="col-1 col-md-1 col-lg-1">
+                        <div class="controls">
+
+                        </div>
+                        </div>*@
+                    </div>
+                    </br>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-lg-12 padding-bottom-30">
+                            <div class="text-left">
+                                <button type="submit" class="btn btn-primary" onclick="return SaveFloor();" name="btnSave" value="Save">
+                                    保存
+                                </button>
+                                <button id="btnUpload" type="submit" class="btn btn-primary" name="btnSave" value="Upload" style="display:none">
+                                    <span class="fa fa-save"></span>
+                                    Upload
+                                </button>
+                                <button type="button" class="btn" onclick="return RedirectBack();">
+                                    <span class="fa fa-undo"></span>
+                                    戻る
+                                </button>
+
+                                <button type="button" class="btn btn-light pull-right" onclick="return ResetFloor();" value="Reset">
+                                    プレビューのリセット
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    @if (Model.FloorId != null)
+                    {
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="controls" id="dvControls" style="margin-top:-15px">
+                                        <img id="FlrImg" src="@Url.Content(Model.ImagePath)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <div class="controls" id="dvControls" style="margin-top:-15px">
+                                        <img id="FlrImg" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </section>
+        </div>
+        <div>
+            @Html.HiddenFor(model => model.FloorId, new { @id = "txtFloorId"})
+            @Html.HiddenFor(model => model.FloorAdmId, new { @id = "txtFloorAdmId"})
+            @Html.HiddenFor(model => model.FloorCode, new { @id = "txtFloorCode"})
+            @Html.HiddenFor(model => model.FloorSrNO, new { @id = "txtFloorSrNo"})
+        </div>
+
+        <script type="text/javascript">
+
+            function FindPosition(oElement) {
+
+                if (typeof (oElement.offsetParent) != "undefined") {
+                    for (var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
+                        posX += oElement.offsetLeft;
+                        posY += oElement.offsetTop;
+                    }
+                    return [posX, posY];
+                }
+                else {
+                    return [oElement.x, oElement.y];
+                }
+            }
+
+            function GetCoordinates(e) {
+
+                var PosX = 0;
+                var PosY = 0;
+                var ImgPos;
+
+                ImgPos = FindPosition(myImg);
+
+                if (!e) var e = window.event;
+
+                if (e.pageX || e.pageY) {
+                    PosX = e.pageX;
+                    PosY = e.pageY;
+                }
+                else if (e.clientX || e.clientY) {
+                    PosX = e.clientX + document.body.scrollLeft
+                        + document.documentElement.scrollLeft;
+                    PosY = e.clientY + document.body.scrollTop
+                        + document.documentElement.scrollTop;
+                }
+
+                PosX = PosX - ImgPos[0];
+                PosY = PosY - ImgPos[1];
+
+                var elemDiv = document.createElement('div');
+                var elemSpan = document.createElement('span');
+
+                var mWidth = $("#txtWidth").val();
+                var mHeight = $("#txtHeight").val();
+
+                elemDiv.setAttribute("class", "dvBookSeat");
+                elemDiv.style.cssText = 'position:absolute;width:' + mWidth + 'px;height:' + mHeight + 'px;background:rgba(0, 0, 255, 0.25);cursor: pointer;';
+                elemDiv.style.left = PosX + "px";
+                elemDiv.style.top = PosY + "px";
+
+                elemSpan.style.cssText = 'position: absolute;width: max-content;background:rgba(0, 0, 255, 0.25);font-weight: bolder;color:black;font-size:11px';
+
+                elemDiv.appendChild(elemSpan);
+                document.getElementById('dvControls').appendChild(elemDiv);
+            }
+
+            var myImg = document.getElementById("FlrImg");
+
+            myImg.onmousedown = GetCoordinates;
+
+            function ResetFloor() {
+                if (confirm("Are you sure ?? \nYou want to Reset")) {
+                    $('.dvBookSeat').remove();
+                }
+            }
+
+        </script>
+
+    </form>
+
+</div>

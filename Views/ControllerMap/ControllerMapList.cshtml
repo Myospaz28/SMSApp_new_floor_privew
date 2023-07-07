@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/appjs/controllermap/controllermapview.js"></script>
+
+<script type="text/javascript">
+
+    function AddControllerMap() {
+        window.location.href = '@Url.Action("New","ControllerMap")';
+        return false;
+    }
+
+</script>
+
+<div ng-controller="ControllerMapViewCtrl">
+    <div class="col-xl-12 PageMargin">
+        <section class="box ">
+            <header class="panel_header">
+                <h2 class="title float-left" style="width:100% !important">
+                    <span>管理部門一覧</span>
+                    <button type="button" class="btn btn-xs btn-primary float-right" onclick="AddControllerMap();" style="margin-right:2%">
+                        <span class="fa fa-plus">
+                            新規
+                        </span>
+                    </button>
+                </h2>
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-12">
+                    </div>
+                    <div class="col-12">
+                        <table id="example-11" class="display table table-hover table-condensed" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Sr No</th>
+                                    <th>管理部門名</th>
+                                    <th>管理部門詳細</th>
+                                    <th>ステータス</th>
+                                    <th>作成日</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr dir-paginate="item in ControllerMapList | orderBy: 'RowId' | itemsPerPage: pageSize | record:'currentPage':this"
+                                    pagination-id="tblControllerMapList">
+                                    <td>
+                                        <span style="cursor:pointer" ng-click="RedirectUserToControllerMap(item.ControllerId);">
+                                            <i class="fa fa-edit"></i>
+                                        </span>
+                                    </td>
+                                    <td ng-bind="item.RowId"></td>
+                                    <td ng-bind="item.ControllerName"></td>
+                                    <td ng-bind="item.ControllerDesc"></td>
+                                    <td>
+                                        <span class="badge badge-primary" ng-bind="item.Status"></span>
+                                    </td>
+                                    <td ng-bind="item.CreatedOn"></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="text-center pull-right">
+                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"
+                                                                     template-url="@Url.Content("~/dirpagination.tpl.html")"
+                                                                     pagination-id="tblControllerMapList">
+                                            </dir-pagination-controls>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

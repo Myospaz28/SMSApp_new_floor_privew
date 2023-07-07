@@ -1,0 +1,93 @@
+﻿@model SMSApp.Models.SC.SeatBookSC
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string? mRoleCode = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value;
+}
+
+<script src="~/js/appjs/SeatBook/SeatBookView.js"></script>
+
+<script type="text/javascript">
+
+    function AddFloorUser() {
+        window.location.href = '@Url.Action("New","Floor")';
+        return false;
+    }
+
+</script>
+
+<div ng-controller="SeatBookViewCtrl">
+    <div class="col-xl-12 PageMargin">
+        <section class="box ">
+            <header class="panel_header">
+                <h2 class="title float-left" style="width:100% !important">
+                    <span>出社・在宅登録</span>
+                </h2>
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-2 col-md-2 col-lg-2">
+                        <div class="form-group">
+                            <label class="form-label title">在宅勤務登録</label>
+                            <div class="controls">
+                                <div class="controls">
+                                    <button type="submit" ng-class="IsWFH === '0' ? 'btn btn-primary btnradius' : 'btn btn-default btnradius'" ng-click="IsWorkFromHome()" ng-disabled="IsWFH == '1'">
+                                        在宅勤務登録
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3 col-md-3 col-lg-3">
+                        <div class="form-group">
+                            <label class="form-label title">退席/勤務終了</label>
+                            <div class="controls">
+                                <button type="button" ng-class="IsWFH == '0' && IsWorking == '0' ? 'btn btn-default btnradius' : 'btn btn-warning btnradius'"
+                                        ng-click="CheckOutSeat();" ng-disabled="IsWFH == '0' && IsWorking == '0'">
+                                    退席/勤務終了
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <table id="example-11" class="display table table-hover table-condensed" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th width="10%">Sr No</th>
+                                    <th width="30%">フロア名</th>
+                                    <th width="35%">フロア詳細</th>
+                                    <th width="10%">座席の登録</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in FloorList" ng-if="FloorList.length > 0">
+                                    <td ng-bind="item.RowId"></td>
+                                    <td ng-bind="item.FloorName"></td>
+                                    <td ng-bind="item.FloorDesc"></td>
+                                    <td class="text-center">
+                                        <span style="cursor:pointer" ng-click="BookSeat(item.FloorId);">
+                                            <i class="fa fa-eye"></i>
+                                        </span>
+                                    </td>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

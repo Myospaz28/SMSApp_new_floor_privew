@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/appjs/floor/floorview.js"></script>
+
+<script type="text/javascript">
+
+    function AddFloorUser() {
+        window.location.href = '@Url.Action("New","Floor")';
+        return false;
+    }
+
+</script>
+
+<div ng-controller="FloorViewCtrl">
+    <div class="col-xl-12 PageMargin">
+        <section class="box ">
+            <header class="panel_header">
+                <h2 class="title float-left" style="width:100% !important">
+                    <span>レイアウト一覧</span>
+                    <button type="button" class="btn btn-xs btn-primary float-right" onclick="AddFloorUser();" style="margin-right:2%">
+                        <span class="fa fa-plus">
+                            新規
+                        </span>
+                    </button>
+                </h2>
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="controls">
+                            <label class="form-label" for="rdoStatusActive">
+                                <input id="rdoStatusActive" type="radio" name="rdoStatusActive" value="1" ng-model="IsActive" ng-change="LoadFloorViewList('1')" />
+                                最新バージョンのみ
+                            </label>
+                            <label class="form-label" for="rdoStatusInActive">
+                                <input id="rdoStatusInActive" type="radio" name="rdoStatusInActive" value="0" ng-model="IsActive" ng-change="LoadFloorViewList('0')" />
+                                旧バージョンのみ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <table id="tblFloorList" class="display table table-hover table-condensed" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Sr No</th>
+                                    <th>フロアID</th>
+                                    <th>フロア名</th>
+                                    <th>詳細</th>
+                                    <th>バージョン</th>
+                                    <th>作成日</th>
+                                    <th class="text text-center">座標の登録</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr dir-paginate="item in FloorList | orderBy: 'RowId' | itemsPerPage: pageSize | record:'currentPage':this">
+                                    <td>
+                                        <span style="cursor:pointer" ng-click="RedirectFloorToEdit(item.FloorId);">
+                                            <i class="fa fa-edit"></i>
+                                        </span>
+                                    </td>
+                                    <td ng-bind="item.RowId"></td>
+                                    <td ng-bind="item.FloorCode"></td>
+                                    <td ng-bind="item.FloorName"></td>
+                                    <td ng-bind="item.FloorDesc"></td>
+                                    <td ng-bind="item.RevNo"></td>
+                                    <td ng-bind="item.CreatedOn"></td>
+                                    <td class="text text-center">
+                                        <span style="cursor:pointer" ng-click="RedirectToMapFloorEdit(item.FloorId,item.FloorMapId);">
+                                            <i class="fa fa-eye"></i>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="text-center pull-right">
+                                            <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"
+                                                                     template-url="@Url.Content("~/dirpagination.tpl.html")">
+                                            </dir-pagination-controls>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

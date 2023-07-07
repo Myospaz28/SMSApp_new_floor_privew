@@ -1,0 +1,760 @@
+﻿@model SMSApp.Models.SC.FloorMapSC
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewBag.Title = "UserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string? mName = string.Empty;
+    string? mRoleName = string.Empty;
+
+    string? mUserTitle = string.Empty;
+    string? mDeptName = string.Empty;
+
+    string? mProfPic = string.Empty;
+
+    mName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+    mRoleName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value;
+
+    mUserTitle = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Actor)?.Value;
+    mDeptName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
+
+    mProfPic = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value;
+
+    Microsoft.Extensions.Primitives.StringValues queryVal;
+    string? mType = string.Empty;
+
+    if (Context.Request.Query.TryGetValue("vType", out queryVal))
+    {
+        mType = queryVal.FirstOrDefault();
+    }
+
+    string mCurrUserId = string.Empty;
+    if (ViewBag.UserId != null)
+    {
+        mCurrUserId = ViewBag.UserId.ToString();
+    }
+
+    string FloorMapId = string.Empty;
+    if (ViewBag.FloorMapId != null)
+    {
+        FloorMapId = ViewBag.FloorMapId.ToString();
+    }
+
+    string? mFloorId = string.Empty;
+    if (Context.Request.Query.TryGetValue("id", out queryVal))
+    {
+        mFloorId = queryVal.FirstOrDefault();
+    }
+
+    string mWidth = string.Empty;
+    if (ViewBag.Width != null)
+    {
+        mWidth = ViewBag.Width.ToString();
+    }
+
+    string mHeight = string.Empty;
+    if (ViewBag.Height != null)
+    {
+        mHeight = ViewBag.Height.ToString();
+    }
+
+}
+
+<script type="text/javascript">
+    var mType = '@mType';
+    var mCurrUserId = '@mCurrUserId';
+    var mFloorId = '@mFloorId';
+    var mFloorMapId = '@FloorMapId';
+
+    var mWidth = '@mWidth';
+    var mHeight = '@mHeight';
+
+    var _Name = '@mName';
+    var _UserTitle = '@mUserTitle';
+    var _DeptName = '@mDeptName';
+
+    var _ProfPic = '@mProfPic';
+
+</script>
+
+<script src="~/js/appjs/floor/FloorMapForm.js"></script>
+
+<script type="text/javascript">
+
+    function OnFloorMapSuccess() {
+        swal({
+            title: "SUCCESS!",
+            text: "正常に完了しました。",
+            type: "success",
+            confirmButtonText: "OK"
+        },
+            function (isConfirm) {
+
+                var mFloorId = $("#txtFloorId").val();
+
+                window.location.href = '/Floor/EditMapFloor?id=' + mFloorId + '&FloorMapId=' + mFloorMapId + '&vType=' + mType;
+            });
+    }
+
+    function RedirectFloor() {
+        window.location.href = '/Floor/EditMapFloor?id=' + mFloorId + '&FloorMapId=' + mFloorMapId + '&vType=' + mType;
+        return false;
+    }
+
+</script>
+
+<style>
+
+    #container {
+        position: relative;
+    }
+
+    #rect1 {
+        position: absolute;
+        top: 376px;
+        left: 380px;
+        width: 30px;
+        height: 25px;
+        background-color: rgba(0, 0, 255, 0.3);
+        cursor: pointer;
+    }
+
+    .rectangle {
+        position: absolute;
+        width: 30px;
+        height: 25px;
+        background-color: rgba(0, 0, 255, 0.3);
+        cursor: pointer;
+    }
+
+    .popup {
+        border: 2px solid blue;
+        border-radius: 5px;
+    }
+</style>
+
+<div ng-controller="FloorMapFormCtrl">
+    <div class="col-12">
+        <section class="box" style="margin:-15px">
+            <header class="panel_header">
+                @if (Model != null)
+                {
+                    if (mType == "Srch")
+                    {
+                        <h2 class="title float-left">座席の表示 - @Model.FloorName</h2>
+                    }
+                    else
+                    {
+                        <h2 class="title float-left">座席の選択 - @Model.FloorName</h2>
+                    }
+
+                    @Html.HiddenFor(model => model.ActWidth, new { @id = "hiddActWidth"})
+                    @Html.HiddenFor(model => model.ActHeight, new { @id = "hiddActHeight"})
+                }
+
+                @if (mType == "Srch")
+                {
+                    <button class="btn btn-primary" type="button" ng-click="GetAllWFHUsersUnderHM();" style="margin:20px">
+                        在宅勤務中のユーザ
+                    </button>
+                }
+
+                @if (mType != "Srch")
+                {
+                    <button class="btn btn-secondary" type="button" ng-click="RedirectBack();" style="margin:20px">
+                        戻る
+                    </button>
+                }
+
+            </header>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            @*<label class="form-label title">フロア名</label>*@
+                            <div class="controls" id="dvControls" style="margin-top:-15px">
+                                <img id="myImgId" src="@Url.Content(Model.ImagePath)" />
+                                @*<div id="dv_1" onclick="BookSeat(24,'15','20','','undefined','undefined','293','246')" style="position: absolute; width: 15px; height: 20px; background: rgba(220, 20, 60, 0.4);">
+                                <span style="position: absolute; width: 30px; height: 20px;  font-weight: bolder;color:black;"> 太郎</span>
+                                </div>*@
+                                @*<div id="rectangle" onmouseover="showPopup()" onmouseout="hidePopup()" onclick="handleClick()">Click Me</div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="dvChairDtls" aria-labelledby="dvChairDtls" class="modal fade" role="dialog"
+         data-backdrop="static" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">座標の登録</h4>
+                    <button aria-label="Close" class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/Floor/SaveMapFloor" data-ajax="true" data-ajax-failure="OnFailure"
+                          data-ajax-method="POST" data-ajax-success="OnFloorMapSuccess" id="form0" method="post" enctype="multipart/form-data">
+
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label title">
+                                        幅
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.width, new {@id="txtWidth", @class = "form-control", @placeholder = "幅", @autocomplete = "off",@value="15" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.width)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        縦
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.height, new { @id="txtHeight", @class = "form-control", @placeholder = "縦", @autocomplete = "off",@value="15" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.height)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        座席名
+                                        <span class="text text-danger">*</span>
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.SeatID, new { @id="txtSeatId",@class = "form-control", @placeholder = "座席名", @autocomplete = "off" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.SeatID)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label title">
+                                        備考
+                                    </label>
+                                    <div class="controls">
+                                        @Html.TextAreaFor(model => model.SeatDetails, new { @id="txtSeatDtls",@class = "form-control", @placeholder = "備考", @autocomplete = "off" })
+                                        <div class="text-danger">
+                                            @Html.ValidationMessageFor(model => model.SeatDetails)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">クリックのX, Y</label>
+                                    <div class="controls">
+                                        <span id="spCurrentXY"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">ステータス</label>
+                                    <div class="controls">
+                                        @Html.RadioButtonFor(model => model.IsActive, "1", new { @id = "rdoStatusActive", @checked = "checked" })
+                                        <label class="form-label" for="rdoStatusActive">有効</label>
+                                        @Html.RadioButtonFor(model => model.IsActive, "0", new { @id = "rdoStatusInActive" })
+                                        <label class="form-label" for="rdoStatusInActive">無効</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary btn-sm" type="button" onclick="RedirectFloor();">
+                                <i class="fa fa-remove"></i>
+                                キャンセル
+                            </button>
+                            <button class="btn btn-primary btn-sm" type="submit" onclick="SaveFloorMap();">
+                                <i class="fa fa-save"></i>
+                                保存
+                            </button>
+                        </div>
+                        <div>
+                            @Html.HiddenFor(model => model.CurrentX, new { @id = "hiddCurrentX"})
+                            @Html.HiddenFor(model => model.CurrentY, new { @id = "hiddCurrentY"})
+                            @Html.HiddenFor(model => model.FloorId, new { @id = "txtFloorId"})
+                            @Html.HiddenFor(model => model.FloorAdmId, new { @id = "txtFloorAdmId"})
+                            @Html.HiddenFor(model => model.FloorMapJSON, new { @id = "txtFloorJSON"})
+                            @Html.HiddenFor(model => model.FloorMapId, new { @id = "hiddFloorMapId"})
+                            @Html.HiddenFor(model => model.Id, new { @id = "hiddId"})
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dvBookSeat" aria-labelledby="dvBookSeat" class="modal fade" role="dialog"
+         data-backdrop="static" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="hdrBookSeat" class="modal-title">座席の登録</h4>
+                    <h4 id="hdrReleaseSeat" class="modal-title">座席の解除</h4>
+                    <button aria-label="Close" class="close" type="button" onclick="location.reload();"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/Floor/BookSeat" data-ajax="true"
+                          data-ajax-method="POST" data-ajax-success="OnFloorBookSeatSuccess" data-ajax-failure="OnFloorBookSeatFailure"
+                          id="form0" method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">プロフィール写真</label>
+                                    <div class="controls">
+
+                                        <img id="spImgUserDtls" src="~/users.jpg" width="100px" height="100px" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">利用者名</label>
+                                    <div class="controls">
+                                        <span id="spUserName"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label">座席ID</label>
+                                    <div class="controls">
+                                        <span id="spSeatId"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-label title">備考</label>
+                                    <div class="controls">
+                                        <span id="spSeatDetails"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary btn-sm" type="button" onclick="location.reload();">
+                                <i class="fa fa-remove"></i>
+                                戻る
+                            </button>
+                            <button class="btn btn-primary btn-sm" type="submit" id="btnBookSeat" name="btnAction" value="BookSeat">
+                                <i class="fa fa-save"></i> 座席の登録
+                            </button>
+
+                            <button class="btn btn-primary btn-sm" type="submit" id="btnRelease" name="btnAction" value="Release"
+                                    style="display:none">
+                                <i class="fa fa-save"></i> 利用解除
+                            </button>
+
+                        </div>
+                        <div>
+                            @Html.HiddenFor(model => model.FloorId, new { @id = "txtBookFloorId"})
+                            @Html.HiddenFor(model => model.FloorMapId, new { @id = "txtBookFloorMapId"})
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dvUserDtls" aria-labelledby="dvUserDtls" class="modal fade" role="dialog"
+         data-backdrop="static" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">利用者情報</h4>
+                    <button aria-label="Close" class="close" type="button" onclick="location.reload();"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">プロフィール写真</label>
+                                <div class="controls">
+                                    <img id="ImgUserDtls" src="~/users.jpg" width="100px" height="100px" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6 col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label">利用者名</label>
+                                <div class="controls">
+                                    <span id="spUserNameDtls"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="location.reload();">
+                            <i class="fa fa-remove"></i>
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dvWFHUser" aria-labelledby="dvWFHUser" class="modal fade" role="dialog"
+         data-backdrop="none" aria-modal="true" style="display: none;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">在宅勤務中のユーザ</h4>
+                    <button aria-label="Close" class="close" type="button" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="tblAllWFHUsersUnderHM" class="display table table-hover table-condensed tblAllWFHUsersUnderHM" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">Sr No</th>
+                                        <th width="90%">氏名</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="item in AllWFHUsersUnderHM | orderBy: 'RowId' | itemsPerPage: pageSize | record:'currentPage':this"
+                                        pagination-id="tblAllWFHUsersUnderHM" ng-if="AllWFHUsersUnderHM.length > 0">
+                                        <td ng-bind="item.RowId"></td>
+                                        <td ng-bind="item.Name"></td>
+                                    </tr>
+                                    <tr ng-if="AllWFHUsersUnderHM.length == 0">
+                                        <td colspan="2">
+                                            <span class="text text-danger">該当する情報はありません。</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">
+                                            <div class="text-center pull-right" ng-if="AllWFHUsersUnderHM.length > 0">
+                                                <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)"
+                                                                         template-url="@Url.Content("~/dirpagination.tpl.html")"
+                                                                         pagination-id="tblAllWFHUsersUnderHM">
+                                                </dir-pagination-controls>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        function FindPosition(oElement) {
+
+            if (typeof (oElement.offsetParent) != "undefined") {
+                for (var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
+                    posX += oElement.offsetLeft;
+                    posY += oElement.offsetTop;
+                }
+                return [posX, posY];
+            }
+            else {
+                return [oElement.x, oElement.y];
+            }
+        }
+
+        function GetCoordinates(e) {
+
+            var PosX = 0;
+            var PosY = 0;
+            var ImgPos;
+
+            ImgPos = FindPosition(myImg);
+
+            if (!e) var e = window.event;
+
+            if (e.pageX || e.pageY) {
+                PosX = e.pageX;
+                PosY = e.pageY;
+            }
+            else if (e.clientX || e.clientY) {
+                PosX = e.clientX + document.body.scrollLeft
+                    + document.documentElement.scrollLeft;
+                PosY = e.clientY + document.body.scrollTop
+                    + document.documentElement.scrollTop;
+            }
+
+            PosX = PosX - ImgPos[0];
+            PosY = PosY - ImgPos[1];
+
+            var mCordinates = PosX + "," + PosY;
+
+            $("#txtWidth").val(mWidth);
+            $("#txtHeight").val(mHeight);
+
+            $("#spCurrentXY").text(mCordinates);
+
+            $("#hiddCurrentX").val(PosX);
+            $("#hiddCurrentY").val(PosY);
+
+            $("#hiddId").val("");
+
+            if (mType == "Map") {
+                $("#dvChairDtls").modal('show');
+            }
+        }
+
+        var myImg = document.getElementById("myImgId");
+
+        myImg.onmousedown = GetCoordinates;
+
+    </script>
+
+    <script type="text/javascript">
+
+        var mFloorMapJSON = $("#txtFloorJSON").val();
+
+        if (mFloorMapJSON != undefined && mFloorMapJSON != null) {
+
+            mFloorMapJSON = JSON.parse(mFloorMapJSON);
+
+            for (var i = 0; i < mFloorMapJSON.length; i++) {
+
+                var elemDiv = document.createElement('div');
+                var elemSpan = document.createElement('span');
+               // elemDiv.style.cssText = 'position:absolute;width:' + mFloorMapJSON[i].width + 'px;height:' + mFloorMapJSON[i].height + 'px;background:' + mFloorMapJSON[i].BGColor + ';cursor: pointer;border:1px solid black;';
+
+                elemDiv.style.cssText = 'position:absolute;width:' + mFloorMapJSON[i].width + 'px;height:' + mFloorMapJSON[i].height + 'px;background:' + mFloorMapJSON[i].BGColor + ';cursor: pointer;';
+                elemDiv.style.left = mFloorMapJSON[i].CurrentX + "px";
+                elemDiv.style.top = mFloorMapJSON[i].CurrentY + "px";
+
+                elemSpan.innerHTML = mFloorMapJSON[i].UserDisplay;
+                elemSpan.style.cssText = 'position: absolute;width: max-content;background:' + mFloorMapJSON[i].BGColor + ';font-weight: bolder;color:black;font-size:' + mFloorMapJSON[i].UsernameFontsize + 'px';
+
+                elemDiv.id = "dv_" + i.toString();
+
+                var mIsCreatedUsr = (mFloorMapJSON[i].CreatedBy != "0" && mFloorMapJSON[i].CreatedBy == mCurrUserId) ? "Y" : "N";
+
+                if (mType === "BS") {
+
+                    if (mIsCreatedUsr == "Y" || mFloorMapJSON[i].CreatedBy == "0") {
+                        elemDiv.setAttribute("onclick", "BookSeat(" + mFloorMapJSON[i].Id + ",'" + mIsCreatedUsr + "')");
+                    }
+                    else if (mIsCreatedUsr == "N") {
+
+                        var mFullName = mFloorMapJSON[i].LNKanji + ' ' + mFloorMapJSON[i].FNKanji;
+
+                        elemDiv.setAttribute("onclick", "showPopup('" + i.toString() + "','" + mFullName + "','" + mFloorMapJSON[i].UserTitle + "','" + mFloorMapJSON[i].ProfilePhotoPath + "','" + mFloorMapJSON[i].DeptName + "')");
+
+                    }
+
+                    if ('@mRoleName' == "FloorAdmin" || '@mRoleName' == "SystemAdm") {
+                        elemDiv.setAttribute("onclick", "BookSeat(" + mFloorMapJSON[i].Id + ",'" + mIsCreatedUsr + "')");
+                    }
+
+                }
+                else if (mType === "Map") {
+                    elemDiv.setAttribute("onclick", "GetSeatDtls(" + mFloorMapJSON[i].Id + ",'" + mFloorMapJSON[i].width + "','" + mFloorMapJSON[i].height + "'," +
+                        "'" + mFloorMapJSON[i].SeatID + "','" + mFloorMapJSON[i].SeatDetails + "'," +
+                        "'" + mFloorMapJSON[i].CurrentX + "','" + mFloorMapJSON[i].CurrentY + "')");
+                }
+                else if (mType == "Srch") {
+
+                    var mName = mFloorMapJSON[i].LNKanji + ' ' + mFloorMapJSON[i].FNKanji;
+
+                    elemDiv.setAttribute("onclick", "showPopup('" + i.toString() + "','" + mName + "','" + mFloorMapJSON[i].UserTitle + "','" + mFloorMapJSON[i].ProfilePhotoPath + "','" + mFloorMapJSON[i].DeptName + "')");
+
+                    //if (mFloorMapJSON[i].UserDisplay != undefined && mFloorMapJSON[i].UserDisplay != null && mFloorMapJSON[i].UserDisplay != "") {
+                    //}
+                }
+
+                elemDiv.appendChild(elemSpan);
+                document.getElementById('dvControls').appendChild(elemDiv);
+            }
+
+        }
+
+        function BookSeat(vId) {
+
+            var mFloorMapJSON = $("#txtFloorJSON").val();
+
+            if (mFloorMapJSON != undefined && mFloorMapJSON != null) {
+
+                mFloorMapJSON = JSON.parse(mFloorMapJSON);
+
+                for (var i = 0; i < mFloorMapJSON.length; i++) {
+
+                    if (mFloorMapJSON[i].Id == vId) {
+
+                        var mName = "";
+
+                        if (mFloorMapJSON[i].DeptName != "" && mFloorMapJSON[i].DeptName != undefined) {
+                            mName = mFloorMapJSON[i].DeptName + "<br/>";
+                        }
+
+                        if (mFloorMapJSON[i].UserTitle != "" && mFloorMapJSON[i].UserTitle != undefined) {
+                            mName = mName + mFloorMapJSON[i].UserTitle + "<br/>";
+                        }
+
+                        if (mFloorMapJSON[i].LNKanji != "" && mFloorMapJSON[i].LNKanji != undefined) {
+                            mName = mName + mFloorMapJSON[i].LNKanji + ' ' + mFloorMapJSON[i].FNKanji;
+                        }
+
+                        if (mName == "") {
+
+                            if (_DeptName != "")
+                                mName = _DeptName + "</br>";
+
+                            if (_UserTitle != "")
+                                mName = mName + _UserTitle + "<br/>";
+
+                            mName = mName + _Name;
+                        }
+
+                        $("#spUserName").html(mName);
+
+                        if (mFloorMapJSON[i].ProfilePhotoPath != "" && mFloorMapJSON[i].ProfilePhotoPath != undefined) {
+                            var mPhoto = mFloorMapJSON[i].ProfilePhotoPath;
+
+                            mPhoto = mPhoto.replace("~", "..");
+                            $("#spImgUserDtls").attr("src", mPhoto);
+                        }
+                        else {
+                            var mPhoto = _ProfPic;
+
+                            if (mPhoto != "" && mPhoto != undefined) {
+
+                                mPhoto = mPhoto.replace("~", "..");
+                                $("#spImgUserDtls").attr("src", mPhoto);
+
+                            }
+                        }
+
+                        $("#spSeatId").text(mFloorMapJSON[i].SeatID);
+                        $("#spSeatDetails").text(mFloorMapJSON[i].SeatDetails);
+                        $("#txtBookFloorId").val(mFloorMapJSON[i].FloorId);
+                        $("#txtBookFloorMapId").val(mFloorMapJSON[i].Id);
+
+                        break;
+                    }
+                }
+
+                $("#btnBookSeat").hide();
+                $("#btnRelease").hide();
+
+                $("#hdrBookSeat").hide();
+                $("#hdrReleaseSeat").hide();
+
+                if (mFloorMapJSON[i].IsBooked != null && mFloorMapJSON[i].IsBooked != undefined && mFloorMapJSON[i].IsBooked == "1") {
+                    $("#btnRelease").show();
+                    $("#hdrReleaseSeat").show();
+                }
+                else {
+                    $("#btnBookSeat").show();
+                    $("#hdrBookSeat").show();
+                }
+
+                $("#dvBookSeat").modal('show');
+            }
+        }
+
+        function GetSeatDtls(vId, vWidth, vHeight, vSeatId, vSeatDtls, vCurrentX, vCurrentY) {
+
+            var mWidth = "15";
+            var mHeight = "15";
+
+            if (vWidth != "" && vWidth != undefined)
+                mWidth = vWidth;
+
+            if (vHeight != "" && vHeight != undefined)
+                mHeight = vHeight;
+
+            $("#txtWidth").val(mWidth);
+            $("#txtHeight").val(mHeight);
+
+            $("#txtSeatId").val(vSeatId);
+            $("#txtSeatDtls").val(vSeatDtls);
+
+            $("#hiddCurrentX").val(vCurrentX);
+            $("#hiddCurrentY").val(vCurrentY);
+
+            $("#spCurrentXY").text(vCurrentX + "," + vCurrentY);
+
+            $("#hiddId").val(vId);
+
+            $("#dvChairDtls").modal('show');
+        }
+
+        function showPopup(vIndex, vName, vUserTitle, vProfPicPath, vDeptName) {
+
+            if (vName != "") {
+                vName = vDeptName + "<br/>" + vUserTitle + "<br/>" + vName;
+
+                $("#spUserNameDtls").html(vName);
+
+                if (vProfPicPath != "") {
+                    vProfPicPath = vProfPicPath.replace("~", "..");
+                    $("#ImgUserDtls").attr("src", vProfPicPath);
+                }
+
+                $("#dvUserDtls").modal('show');
+            }
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+        function OnFloorBookSeatSuccess() {
+
+            swal({
+                title: "SUCCESS!",
+                text: "正常に完了しました。",
+                type: "success",
+                confirmButtonText: "OK"
+            },
+                function (isConfirm) {
+
+                    var mFloorId = $("#txtFloorId").val();
+
+                    window.location.href = '/Floor/EditMapFloor?id=' + mFloorId + '&vType=' + mType;
+                });
+        }
+
+        function RedirectBack() {
+
+            window.location.href = '@Url.Action("Index","User")';
+
+            return false;
+        }
+
+    </script>
+
+</div>

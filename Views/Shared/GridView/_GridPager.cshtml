@@ -1,0 +1,34 @@
+﻿@{
+	string mGridObjName = Html.ViewData["GridObj"].ToString();
+	string mVar = mGridObjName + "GridViewDataSumm.TotalRecord > 0";
+}
+
+<div class="row grid-pager" ng-show="@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalRecord > 0")">
+	<div class="col-md-6 text-red" style1="font-weight:500">
+		Showing Records {{@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.StartRecord")}} to {{@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.EndRecord")}}
+		of {{@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalRecord")}}
+	</div>
+	<div class="col-md-6 text-right">
+		<ul class="pagination pagination-sm1 pull-right">
+			<li class="pagination-prev page-item">
+				<a class="page-link" href="javascript:void(0)" ng-click="@String.Format("{0}{1}", mGridObjName, ".firstPage()")"
+				   ng-show="@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.currentPage > 1")">First</a>
+			</li>
+			<li class="pagination-prev page-item">
+				<a class="page-link" href="javascript:void(0)" ng-click="@String.Format("{0}{1}", mGridObjName, ".PreviousPage()")"
+				   ng-show="@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.currentPage > 1")"><<</a>
+			</li>
+			<li class="pagination-prev page-item"
+				ng-hide="@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalPageCount") == @String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.currentPage") || @String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TopRecord") >= @String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalRecord")">
+				<a class="page-link" href="javascript:void(0)" ng-click="@String.Format("{0}{1}", mGridObjName, ".NextPage()")">>></a>
+			</li>
+			<li class="pagination-prev page-item"
+				ng-hide="@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalPageCount") == @String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.currentPage") || @String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TopRecord") >= @String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalRecord")">
+				<a class="page-link" href="javascript:void(0)" ng-click="@String.Format("{0}{1}", mGridObjName, ".lastPage()")">Last</a>
+			</li>
+		</ul>
+	</div>
+</div>
+<div class="top10 text-red" ng-show="@String.Format("{0}{1}", mGridObjName, ".GridViewDataSumm.TotalRecord == 0")">
+	No Record(s) found
+</div>

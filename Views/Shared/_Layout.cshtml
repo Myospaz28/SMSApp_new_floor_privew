@@ -1,0 +1,890 @@
+﻿@using SMSApp.Models.SC
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Razor;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    ViewBag.Title = "_Layout";
+
+    string? mName = string.Empty;
+    string? mUserId = string.Empty;
+    string? mRoleCode = string.Empty;
+    string? mRoleName = string.Empty;
+    string? mProfPic = string.Empty;
+
+    mName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+    mUserId = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+    mRoleCode = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.PrimarySid)?.Value;
+    mRoleName = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+    mProfPic = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.UserData)?.Value;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEAT MANAGEMENT SYSTEM</title>
+
+    <link href="~/Resx/Style1.css" rel="stylesheet" />
+    <link href="~/Resx/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Resx/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/Resx/css/style.css" rel="stylesheet" />
+
+    <link href="~/Resx/css/animate.min.css" rel="stylesheet" />
+    <link href="~/Resx/css/perfect-scrollbar.css" rel="stylesheet" />
+    <link href="~/Resx/css/style.css" rel="stylesheet" />
+    <link href="~/Resx/css/sweetalert.css" rel="stylesheet" />
+    <link href="~/resx/css/select2.min.css" rel="stylesheet" />
+
+    <script src="~/resx/js/jquery-1.11.2.min.js"></script>
+
+    @*<script src="~/Resx/js/jquery-3.2.1.min.js"></script>*@
+    @*<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>*@
+
+    <script src="~/Resx/js/angular.min.js"></script>
+    <script src="~/Resx/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Resx/js/jquery.validate.min.js"></script>
+    <script src="~/Resx/js/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/resx/js/angularjs-dropdown-multiselect.js"></script>
+    <script src="~/resx/paginate/dirpagination.js"></script>
+    @*<script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>*@
+
+    <script src="~/Resx/js/popper.min.js"></script>
+    <script src="~/Resx/js/bootstrap.min.js"></script>
+    <script src="~/Resx/js/jquery.easing.min.js"></script>
+    <script src="~/Resx/js/pace.min.js"></script>
+    <script src="~/Resx/js/perfect-scrollbar.min.js"></script>
+    <script src="~/Resx/js/viewportchecker.js"></script>
+
+    <script src="~/Resx/js/dataTables.buttons.min.js"></script>
+    <script src="~/Resx/js/jszip.min.js"></script>
+    <script src="~/Resx/js/pdfmake.min.js"></script>
+    <script src="~/Resx/js/vfs_fonts.js"></script>
+    <script src="~/Resx/js/buttons.html5.min.js"></script>
+    <script src="~/Resx/js/buttons.print.min.js"></script>
+    <script src="~/Resx/js/scripts.js"></script>
+    <script src="~/Resx/js/sweetalert-dev.js"></script>
+    <script src="~/Resx/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/resx/js/select2.min.js"></script>
+
+    <script src="~/Resx/_app.js"></script>
+
+    <script type="text/javascript">
+        var _RootUrl = '@Url.Content("~")';
+    </script>
+
+</head>
+<body ng-app="ngApp">
+
+    <div class='page-topbar'>
+        <div class='logo-area img img-responsive'>
+            @*<img src="" style="width: 260px; height: 60px;" />*@
+        </div>
+        <div class='quick-area'>
+            <div class='float-left'>
+                <ul class="info-menu left-links list-inline list-unstyled">
+                    <li class="sidebar-toggle-wrap list-inline-item" style="margin-left:-90px">
+                        <h6>
+                            <a href="#" data-toggle="sidebar" class="sidebar_toggle">
+                                <i class="fa fa-angle-left"></i>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </h6>
+                    </li>
+                    <li class="message-toggle-wrapper list-inline-item" style="display: none">
+                        <a href="#" data-toggle="dropdown" class="toggle">
+                            <i class="fa fa-envelope"></i>
+                            <span class="badge badge-pill badge-accent">7</span>
+                        </a>
+                        <ul class="dropdown-menu messages animated fadeIn">
+                            <li class="list dropdown-item">
+                                <ul class="dropdown-menu-list list-unstyled ps-scrollbar">
+                                    <li class="unread status-available">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-1.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Clarine Vassar</strong>
+                                                    <span class="time small">- 15 mins ago</span>
+                                                    <span class="profile-status available float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-away">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-2.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Brooks Latshaw</strong>
+                                                    <span class="time small">- 45 mins ago</span>
+                                                    <span class="profile-status away float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-busy">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-3.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Clementina Brodeur</strong>
+                                                    <span class="time small">- 1 hour ago</span>
+                                                    <span class="profile-status busy float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-offline">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-4.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Carri Busey</strong>
+                                                    <span class="time small">- 5 hours ago</span>
+                                                    <span class="profile-status offline float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-offline">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-5.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Melissa Dock</strong>
+                                                    <span class="time small">- Yesterday</span>
+                                                    <span class="profile-status offline float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-available">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-1.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Verdell Rea</strong>
+                                                    <span class="time small">- 14th Mar</span>
+                                                    <span class="profile-status available float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-busy">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-2.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Linette Lheureux</strong>
+                                                    <span class="time small">- 16th Mar</span>
+                                                    <span class="profile-status busy float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class=" status-away">
+                                        <a href="javascript:;">
+                                            <div class="user-img">
+                                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-3.png" alt="user-image" class="rounded-circle img-inline">*@
+                                            </div>
+                                            <div>
+                                                <span class="name">
+                                                    <strong>Araceli Boatright</strong>
+                                                    <span class="time small">- 16th Mar</span>
+                                                    <span class="profile-status away float-right"></span>
+                                                </span>
+                                                <span class="desc small">
+                                                    Sometimes it takes a lifetime to win a battle.
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                            <li class="external">
+                                <a href="javascript:;">
+                                    <span>Read All Messages</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class='float-right'>
+                <ul class="info-menu right-links list-inline list-unstyled">
+                    <li class="profile list-inline-item">
+                        <a href="#" data-toggle="dropdown" class="toggle">
+                            @if (mProfPic != null && mProfPic != "")
+                            {
+                                <img src="@Url.Content(mProfPic)" alt="user-image" class="rounded-circle img-inline">
+                            }
+                            else
+                            {
+                                <img src="~/Resx/Images/blank-user-img.jpg" alt="user-image" class="rounded-circle img-inline">
+                            }
+
+                            <span>
+                                @try
+                                {
+                                    @*if (mUserSC.EmpName != null)
+                                {
+                                @mUserSC.EmpName
+                                }*@
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+                                <i class="fa fa-angle-down"></i>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu profile animated fadeIn">
+                            @*<li class="dropdown-item">
+                            <a href="#settings">
+                            <i class="fa fa-wrench"></i>
+                            Settings
+                            </a>
+                            </li>*@
+                            <li class="dropdown-item">
+                                <a href="@Url.Action("Edit", "User",new{ id = mUserId ,PageType = "Prof"})">
+                                    <i class="fa fa-user"></i>
+                                    Profile
+                                </a>
+                            </li>
+                            <li class="last dropdown-item">
+                                <a href="@Url.Action("Logout", "Login")">
+                                    <i class="fa fa-lock"></i>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @*<li class="chat-toggle-wrapper list-inline-item">
+                    <a href="#" data-toggle="chatbar" class="toggle_chat">
+                    <i class="fa fa-comments"></i>
+                    <span class="badge badge-pill badge-accent">9</span>
+                    <i class="fa fa-times"></i>
+                    </a>
+                    </li>*@
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- END TOPBAR -->
+    <!-- START CONTAINER -->
+
+    <div class="page-container row-fluid container-fluid">
+        <!-- SIDEBAR - START -->
+        <div class="page-sidebar fixedscroll">
+            <!-- MAIN MENU - START -->
+            <div class="page-sidebar-wrapper" id="main-menu-wrapper">
+                <!-- USER INFO - START -->
+                <div class="profile-info row">
+                    <div class="profile-image col-4">
+                        <a href="#">
+                            @if (mProfPic != null && mProfPic != "")
+                            {
+                                <img alt="" src="@Url.Content(mProfPic)" class="img-fluid rounded-circle">
+                            }
+                            else
+                            {
+                                <img alt="" src="~/Resx/Images/blank-user-img.jpg" class="img-fluid rounded-circle">
+                            }
+                        </a>
+                    </div>
+                    <div class="profile-details col-8">
+                        <h3>
+                            <a href="#">
+                                @mName
+                            </a>
+                            <span class="profile-status online"></span>
+                        </h3>
+                        <p class="profile-title">
+                            @mRoleName
+                        </p>
+                    </div>
+                </div>
+                <ul class='wraplist'>
+                    @*@if (mRoleCode == "Employee" || mRoleCode == "FloorAdmin")
+                    {*@
+                    <li class="">
+                        <a href="@Url.Action("Search", "SeatBook")">
+                            <i class="fa fa-search"></i>
+                            <span class="title">状況検索</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Index", "SeatBook")">
+                            <i class="fa fa-ticket"></i>
+                            <span class="title">出社・在宅登録</span>
+                        </a>
+                    </li>
+                    @*}*@
+
+                    @if (mRoleCode == "FloorAdmin" || mRoleCode == "SystemAdm")
+                    {
+                        <li class="">
+                            <a href="javascript:;">
+                                <i class="fa fa-th-list"></i>
+                                <span class="title">メンテナンス</span>
+                                <span class="arrow open"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                @if (mRoleCode == "SystemAdm")
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "ControllerMap")">
+                                            <i class="fa fa-list"></i>
+                                            管理部門登録
+                                        </a>
+                                    </li>
+                                }
+                                <li>
+                                    <a href="@Url.Action("Index", "User")">
+                                        <i class="fa fa-list"></i>
+                                        ユーザ登録
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Floor")">
+                                        <i class="fa fa-list"></i>
+                                        レイアウト一覧
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "UserAccess")">
+                                        <i class="fa fa-list"></i>
+                                        利用管理
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+
+                    @*<li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-sitemap"></i>
+                    <span class="title">Mapping List</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    </li>
+
+                    <li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-bookmark"></i>
+                    <span class="title">Booking List</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    </li>*@
+                    @*<li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-bar-chart"></i>
+                    <span class="title">Reports</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    </li>*@
+
+                    @*<li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-money"></i>
+                    <span class="title">Role Management</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    <ul class="sub-menu">
+                    <li>
+                    <a href="@Url.Action("ViewBudget", "Budget")">
+                    <i class="fa fa-list"></i>
+                    View Role List
+                    </a>
+                    </li>
+                    <li>
+                    <a class="" href="@Url.Action("New", "Budget")">
+                    <i class="fa fa-plus"></i>
+                    Add Role
+                    </a>
+                    </li>
+                    </ul>
+                    </li>
+                    <li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-inr"></i>
+                    <span class="title">User Management</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    <ul class="sub-menu">
+                    <li>
+                    <a href="@Url.Action("ViewCash", "Cash")">
+                    <i class="fa fa-list"></i>
+                    View User List
+                    </a>
+                    </li>
+                    <li>
+                    <a class="" href="@Url.Action("New", "Cash")">
+                    <i class="fa fa-plus"></i>
+                    Add User
+                    </a>
+                    </li>
+                    </ul>
+                    </li>*@
+                    @*<li class="">
+                    <a href="@Url.Action("UploadTransaction", "BulkUpload")">
+                    <i class="fa fa-list"></i>
+                    <span class="title">Bulk Cash Management</span>
+                    </a>
+                    </li>*@
+                    @*<li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-user"></i>
+                    <span class="title">Floor</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    <ul class="sub-menu">
+                    <li>
+                    <a href="@Url.Action("ViewUser", "UserCreation")">
+                    <i class="fa fa-list"></i>
+                    View Floor List
+                    </a>
+                    </li>
+                    <li>
+                    <a class="" href="@Url.Action("New", "UserCreation")">
+                    <i class="fa fa-plus"></i>
+                    Add Floor
+                    </a>
+                    </li>
+                    </ul>
+                    </li>
+                    <li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-gear"></i>
+                    <span class="title">Area Master</span>
+                    <span class="arrow open"></span>
+                    </a>
+                    <ul class="sub-menu">
+                    <li>
+                    <a href="@Url.Action("ViewRoles", "UserRole")">
+                    <i class="fa fa-list"></i>
+                    View Area List
+                    </a>
+                    </li>
+                    <li>
+                    <a class="" href="@Url.Action("New", "UserRole")">
+                    <i class="fa fa-plus"></i>
+                    Add Area
+                    </a>
+                    </li>
+                    </ul>
+                    </li>*@
+                    @*<li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-bar-chart"></i>
+                    <span class="title">Reports</span>
+                    <span class="arrow "></span>
+                    </a>
+                    </li>*@
+                    @* <li class="">
+                    <a href="javascript:;">
+                    <i class="fa fa-suitcase"></i>
+                    <span class="title">Multi Purpose</span>
+                    <span class="arrow "></span><span class="badge badge-accent">HOT</span>
+                    </a>
+                    <ul class="sub-menu">
+                    <li>
+                    <a class="" href="general.html" target='_blank'>General Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="hospital.html" target='_blank'>Hospital Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="music.html" target='_blank'>Music Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="crm.html" target='_blank'>CRM Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="socialmedia.html" target='_blank'>Social Media Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="freelancing.html" target='_blank'>Freelancing Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="university.html" target='_blank'>University Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="ecommerce.html" target='_blank'>Ecommerce Admin</a>
+                    </li>
+                    <li>
+                    <a class="" href="blog.html" target='_blank'>Blog Admin</a>
+                    </li>
+                    </ul>
+                    </li>*@
+                </ul>
+
+                @try
+                {
+                    <!--if (mUserSC.RoleCode != null && mUserSC.RoleCode == "Administrator")
+                    {
+                        <div class="menustats">-->
+                    @*<h5>PAID </h5>*@
+                    <!--<div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">
+                        </div>
+                    </div>
+                    <span style="font-size: 15px;" class="text-muted font-weight-bold">
+                        <i class="fa fa-inr"></i>
+                        <span id="spRemaining"></span> Of
+                        <span id="spTotal"></span>
+                        Used
+                    </span>-->
+                    @*<h5>OUTSTANDING</h5>
+                <div class="progress">
+                <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%;">
+                </div>
+                </div>*@
+                    <!--</div>
+                    }-->
+                }
+                catch (Exception ex)
+                { }
+
+            </div>
+            <!-- MAIN MENU - END -->
+        </div>
+        <!--  SIDEBAR - END -->
+        <!-- START CONTENT -->
+        <section id="main-content" class=" ">
+            <section class="wrapper main-wrapper row" style=''>
+                <div class='col-12'>
+                    <div class="page-title">
+                        @*<div class="float-left">
+                        <!-- PAGE HEADING TAG - START -->
+                        <h1 class="title">Cash Management</h1>
+                        <!-- PAGE HEADING TAG - END -->
+                        </div>*@
+                        <div class="float-right d-none">
+                            <ol class="breadcrumb">
+                                <li>
+                                    <a href="index.html"><i class="fa fa-home"></i>Home</a>
+                                </li>
+                                <li>
+                                    <a href="frl-users.html">Users</a>
+                                </li>
+                                <li class="active">
+                                    <strong>All Users</strong>
+                                </li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <!-- MAIN CONTENT AREA STARTS -->
+                <div>
+                    @RenderBody()
+                </div>
+                <!-- MAIN CONTENT AREA ENDS -->
+            </section>
+        </section>
+        <!-- END CONTENT -->
+        <div class="page-chatapi hideit">
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search" class="form-control">
+            </div>
+
+            <div class="chat-wrapper">
+                <h4 class="group-head">Groups</h4>
+                <ul class="group-list list-unstyled">
+                    <li class="group-row">
+                        <div class="group-status available">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                        <div class="group-info">
+                            <h4><a href="#">Work</a></h4>
+                        </div>
+                    </li>
+                    <li class="group-row">
+                        <div class="group-status away">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                        <div class="group-info">
+                            <h4><a href="#">Friends</a></h4>
+                        </div>
+                    </li>
+
+                </ul>
+
+
+                <h4 class="group-head">Favourites</h4>
+                <ul class="contact-list">
+
+                    <li class="user-row " id='chat_user_1' data-user-id='1'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-1.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Clarine Vassar</a></h4>
+                            <span class="status available" data-status="available">Available</span>
+                        </div>
+                        <div class="user-status available">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_2' data-user-id='2'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-2.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Brooks Latshaw</a></h4>
+                            <span class="status away" data-status="away">Away</span>
+                        </div>
+                        <div class="user-status away">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_3' data-user-id='3'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-3.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Clementina Brodeur</a></h4>
+                            <span class="status busy" data-status="busy">Busy</span>
+                        </div>
+                        <div class="user-status busy">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+
+                </ul>
+
+
+                <h4 class="group-head">More Contacts</h4>
+                <ul class="contact-list">
+                    <li class="user-row " id='chat_user_5' data-user-id='5'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-5.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Melissa Dock</a></h4>
+                            <span class="status offline" data-status="offline">Offline</span>
+                        </div>
+                        <div class="user-status offline">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_6' data-user-id='6'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-1.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Verdell Rea</a></h4>
+                            <span class="status available" data-status="available">Available</span>
+                        </div>
+                        <div class="user-status available">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_7' data-user-id='7'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-2.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Linette Lheureux</a></h4>
+                            <span class="status busy" data-status="busy">Busy</span>
+                        </div>
+                        <div class="user-status busy">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_8' data-user-id='8'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-3.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Araceli Boatright</a></h4>
+                            <span class="status away" data-status="away">Away</span>
+                        </div>
+                        <div class="user-status away">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_9' data-user-id='9'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-4.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Clay Peskin</a></h4>
+                            <span class="status busy" data-status="busy">Busy</span>
+                        </div>
+                        <div class="user-status busy">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_10' data-user-id='10'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-5.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Loni Tindall</a></h4>
+                            <span class="status away" data-status="away">Away</span>
+                        </div>
+                        <div class="user-status away">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_11' data-user-id='11'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-1.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Tanisha Kimbro</a></h4>
+                            <span class="status idle" data-status="idle">Idle</span>
+                        </div>
+                        <div class="user-status idle">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                    <li class="user-row " id='chat_user_12' data-user-id='12'>
+                        <div class="user-img">
+                            <a href="#">
+                                @*<img src="http://jaybabani.com/complete-admin/v6.4/bs4/data/profile/avatar-2.png" alt="">*@
+                            </a>
+                        </div>
+                        <div class="user-info">
+                            <h4><a href="#">Jovita Tisdale</a></h4>
+                            <span class="status idle" data-status="idle">Idle</span>
+                        </div>
+                        <div class="user-status idle">
+                            <i class="fa fa-circle"></i>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="chatapi-windows ">
+        </div>
+    </div>
+
+    <!-- General section box modal start -->
+    <div class="modal" id="section-settings" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog animated bounceInDown">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Section Settings</h4>
+                </div>
+                <div class="modal-body">
+                    Body goes here...
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">戻る</button>
+                    <button class="btn btn-success" type="button">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal end -->
+    @*<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SMSApp</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    </li>
+    <li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </li>
+    </ul>
+    </div>
+    </div>
+    </nav>
+    </header>
+    <div class="container">
+    <div class="container">
+    <main role="main" class="pb-3">
+    @RenderBody()
+    </main>
+    </div>
+    *@
+
+    @*<footer class="border-top footer text-muted">
+    <div class="container">
+    &copy; 2023 - SMSApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
+    </footer>*@
+
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>*@
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
