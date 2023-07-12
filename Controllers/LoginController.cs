@@ -24,6 +24,7 @@ namespace SMSApp.Controllers
         private IConfiguration Configuration;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private static Boolean _isLogOut = false;
 
         public LoginController(ILogger<LoginController> logger, IConfiguration _configuration,
                                IWebHostEnvironment? webHostEnvironment, IHttpContextAccessor httpContextAccessor)
@@ -47,21 +48,8 @@ namespace SMSApp.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            //String UserName = Request.LogonUserIdentity.Name;
-            //String? UserName = System.DirectoryServices.AccountManagement.UserPrincipal.Current.DisplayName;
-            //string vUsername = this.GetUser();
 
-            //WindowsIdentity microsoftIdentity = WindowsIdentity.GetCurrent();
-            //UserPrincipal userPrincipal = UserPrincipal.Current;
-            //string mName = userPrincipal.Name;
-            //string mDisplayName = userPrincipal.DisplayName;
-
-            //this.DebugLog("Start 1");
-            //this.DebugLog(mName);
-            //this.DebugLog(mDisplayName);
-            //this.DebugLog("End");
-
-            if (Configuration.GetSection("AppSettings:IsSSO").Value.ToString() == "Y")
+            if (Configuration.GetSection("AppSettings:IsSSO").Value.ToString() == "Y" & _isLogOut == false)
             {
 
                 LoginBLL mLoginBLL = null;
@@ -104,6 +92,8 @@ namespace SMSApp.Controllers
                     }
                 }
             }
+
+            _isLogOut = false;
 
             return View("Login");
         }
@@ -172,6 +162,7 @@ namespace SMSApp.Controllers
         public ActionResult Logout()
         {
             HttpContext.SignOutAsync();
+            _isLogOut = true;
             return RedirectToAction("Index", "Login");
         }
 

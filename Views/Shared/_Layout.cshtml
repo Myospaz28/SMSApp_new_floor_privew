@@ -279,24 +279,21 @@
                             </span>
                         </a>
                         <ul class="dropdown-menu profile animated fadeIn">
-                            @*<li class="dropdown-item">
-                            <a href="#settings">
-                            <i class="fa fa-wrench"></i>
-                            Settings
-                            </a>
-                            </li>*@
                             <li class="dropdown-item">
                                 <a href="@Url.Action("Edit", "User",new{ id = mUserId ,PageType = "Prof"})">
                                     <i class="fa fa-user"></i>
                                     Profile
                                 </a>
                             </li>
-                            <li class="last dropdown-item">
-                                <a href="@Url.Action("Logout", "Login")">
-                                    <i class="fa fa-lock"></i>
-                                    Logout
-                                </a>
-                            </li>
+                            if (mRoleCode == "SystemAdm")
+                            {
+                                <li class="last dropdown-item">
+                                    <a href="@Url.Action("Logout", "Login")">
+                                        <i class="fa fa-lock"></i>
+                                        Logout
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </li>
                     @*<li class="chat-toggle-wrapper list-inline-item">
@@ -346,8 +343,6 @@
                     </div>
                 </div>
                 <ul class='wraplist'>
-                    @*@if (mRoleCode == "Employee" || mRoleCode == "FloorAdmin")
-                    {*@
                     <li class="">
                         <a href="@Url.Action("Search", "SeatBook")">
                             <i class="fa fa-search"></i>
@@ -360,7 +355,6 @@
                             <span class="title">出社・在宅登録</span>
                         </a>
                     </li>
-                    @*}*@
 
                     @if (mRoleCode == "FloorAdmin" || mRoleCode == "SystemAdm")
                     {
@@ -402,162 +396,7 @@
                         </li>
                     }
 
-                    @*<li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-sitemap"></i>
-                    <span class="title">Mapping List</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    </li>
-
-                    <li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-bookmark"></i>
-                    <span class="title">Booking List</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    </li>*@
-                    @*<li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-bar-chart"></i>
-                    <span class="title">Reports</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    </li>*@
-
-                    @*<li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-money"></i>
-                    <span class="title">Role Management</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    <ul class="sub-menu">
-                    <li>
-                    <a href="@Url.Action("ViewBudget", "Budget")">
-                    <i class="fa fa-list"></i>
-                    View Role List
-                    </a>
-                    </li>
-                    <li>
-                    <a class="" href="@Url.Action("New", "Budget")">
-                    <i class="fa fa-plus"></i>
-                    Add Role
-                    </a>
-                    </li>
-                    </ul>
-                    </li>
-                    <li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-inr"></i>
-                    <span class="title">User Management</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    <ul class="sub-menu">
-                    <li>
-                    <a href="@Url.Action("ViewCash", "Cash")">
-                    <i class="fa fa-list"></i>
-                    View User List
-                    </a>
-                    </li>
-                    <li>
-                    <a class="" href="@Url.Action("New", "Cash")">
-                    <i class="fa fa-plus"></i>
-                    Add User
-                    </a>
-                    </li>
-                    </ul>
-                    </li>*@
-                    @*<li class="">
-                    <a href="@Url.Action("UploadTransaction", "BulkUpload")">
-                    <i class="fa fa-list"></i>
-                    <span class="title">Bulk Cash Management</span>
-                    </a>
-                    </li>*@
-                    @*<li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-user"></i>
-                    <span class="title">Floor</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    <ul class="sub-menu">
-                    <li>
-                    <a href="@Url.Action("ViewUser", "UserCreation")">
-                    <i class="fa fa-list"></i>
-                    View Floor List
-                    </a>
-                    </li>
-                    <li>
-                    <a class="" href="@Url.Action("New", "UserCreation")">
-                    <i class="fa fa-plus"></i>
-                    Add Floor
-                    </a>
-                    </li>
-                    </ul>
-                    </li>
-                    <li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-gear"></i>
-                    <span class="title">Area Master</span>
-                    <span class="arrow open"></span>
-                    </a>
-                    <ul class="sub-menu">
-                    <li>
-                    <a href="@Url.Action("ViewRoles", "UserRole")">
-                    <i class="fa fa-list"></i>
-                    View Area List
-                    </a>
-                    </li>
-                    <li>
-                    <a class="" href="@Url.Action("New", "UserRole")">
-                    <i class="fa fa-plus"></i>
-                    Add Area
-                    </a>
-                    </li>
-                    </ul>
-                    </li>*@
-                    @*<li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-bar-chart"></i>
-                    <span class="title">Reports</span>
-                    <span class="arrow "></span>
-                    </a>
-                    </li>*@
-                    @* <li class="">
-                    <a href="javascript:;">
-                    <i class="fa fa-suitcase"></i>
-                    <span class="title">Multi Purpose</span>
-                    <span class="arrow "></span><span class="badge badge-accent">HOT</span>
-                    </a>
-                    <ul class="sub-menu">
-                    <li>
-                    <a class="" href="general.html" target='_blank'>General Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="hospital.html" target='_blank'>Hospital Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="music.html" target='_blank'>Music Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="crm.html" target='_blank'>CRM Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="socialmedia.html" target='_blank'>Social Media Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="freelancing.html" target='_blank'>Freelancing Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="university.html" target='_blank'>University Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="ecommerce.html" target='_blank'>Ecommerce Admin</a>
-                    </li>
-                    <li>
-                    <a class="" href="blog.html" target='_blank'>Blog Admin</a>
-                    </li>
-                    </ul>
-                    </li>*@
+                   
                 </ul>
 
                 @try
@@ -845,44 +684,6 @@
     </div>
 
     <!-- modal end -->
-    @*<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container-fluid">
-    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SMSApp</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-    aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-    </li>
-    <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </li>
-    </ul>
-    </div>
-    </div>
-    </nav>
-    </header>
-    <div class="container">
-    <div class="container">
-    <main role="main" class="pb-3">
-    @RenderBody()
-    </main>
-    </div>
-    *@
-
-    @*<footer class="border-top footer text-muted">
-    <div class="container">
-    &copy; 2023 - SMSApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-    </footer>*@
-
-    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>*@
 
     @await RenderSectionAsync("Scripts", required: false)
 

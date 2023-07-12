@@ -134,7 +134,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6 col-md-6 col-lg-6">
+                        <div class="col-4 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label">
                                     フロアレイアウト画像
@@ -153,13 +153,22 @@
 
                                     <br />
                                     <span class="text text-danger">
-                                        レイアウト画像を変更した場合、フロアの利用者は退席されます。
+                                        画像を変更した場合、フロアの利用者は退席されます。
 
                                     </span>
 
                                     <div id="dvErrors" class="text-danger">
                                         @Html.ValidationMessageFor(model => model.FloorImage)
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 col-md-2 col-lg-2">
+                            <div class="form-group">
+                                <label class="form-label">バージョン</label>
+                                <div class="controls">
+                                    @Html.DisplayFor(model => model.RevNO)
+                                    @Html.HiddenFor(model => model.RevNO)
                                 </div>
                             </div>
                         </div>
@@ -173,33 +182,59 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-6 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">バージョン</label>
-                                <div class="controls">
-                                    @Html.DisplayFor(model => model.RevNO)
-                                    @Html.HiddenFor(model => model.RevNO)
+                        <div class="col-4 col-md-6 col-lg-6">
+                            <div class="form-group" >
+                                <div class="row">
+                                    <tr>
+                                        <label class="form-label">
+                                            座席指定初期値縦幅
+                                            <span class="text text-danger">*</span>
+                                        </label>
+                                    </tr> 
+                                    <tr>
+                                        <div class="col-md-4">
+                                            @Html.TextBoxFor(model => model.Height, new { @id = "txtHeight", @class = "form-control" ,@placeholder = "Enter Height"})
+                                        </div>
+                                    </tr>
+                                    <tr>
+                                        <div class="col-md-4">
+                                            @Html.TextBoxFor(model => model.Width, new { @id = "txtWidth", @class = "form-control" ,@placeholder = "Enter Width"})
+                                        </div>
+                                    </tr>
                                 </div>
+                               
                             </div>
                         </div>
 
                         <div class="col-6 col-md-6 col-lg-6">
                             <div class="form-group">
-                                <label class="form-label">
-                                    ステータス
-                                    <span class="text text-danger">*</span>
-                                </label>
-                                <div class="controls">
-                                    @Html.RadioButtonFor(model => model.Status, "1", new { @id = "rdoStatus"})
-                                    <label class="form-label" for="rdoStatusActive">有効</label>
-                                    @Html.RadioButtonFor(model => model.Status, "0", new { @id = "rdoStatus" })
-                                    <label class="form-label" for="rdoStatusInActive">無効</label>
-                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <tr><td>
+                                            <label class="form-label">
+                                                ステータス
+                                                <span class="text text-danger">*</span>
+                                            </label>
+                                        </td></tr>
+                                    </div>
+                                    <span class="text text-danger"> </span>
+                                    <tr></tr>
+                                    <div class="form-group">
+                                        <tr><td>
+                                            @Html.RadioButtonFor(model => model.Status, "1", new { @id = "rdoStatus"})
+                                            <label class="form-label" for="rdoStatusActive">有効</label></td>
+                                            @Html.RadioButtonFor(model => model.Status, "0", new { @id = "rdoStatus" })
+                                            <td><label class="form-label" for="rdoStatusInActive">無効</label></td>
+                                        </tr>
+                                    </div>
+                                   
+                               
+                            </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
+                   @* <div class="row">
                         <div class="col-4 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label class="form-label">
@@ -227,8 +262,8 @@
                         <div class="controls">
 
                         </div>
-                        </div>*@
-                    </div>
+                        </div>
+                    </div>*@
                     </br>
                     <div class="row">
                         <div class="col-12 col-md-12 col-lg-12 padding-bottom-30">
