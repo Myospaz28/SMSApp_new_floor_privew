@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SMSApp.Models;
 using SMSApp.Models.SC;
-using System.Diagnostics;
-using System.Security.Claims;
-using WebTemplate.Models.BLL;
 using System.Data;
-using Newtonsoft.Json;
-using SMSApp.Models.DAL;
-using Microsoft.AspNetCore.Authorization;
+using System.Diagnostics;
+using WebTemplate.Models.BLL;
 
 namespace SMSApp.Controllers
 {
@@ -123,7 +119,7 @@ namespace SMSApp.Controllers
 
         // Get All Seat Search List
         [HttpPost]
-        public IActionResult SeatSearchList(string vLastName, string vFirstName, string vFloorId, string vDeptId,string vSrchType)
+        public IActionResult SeatSearchList(string vLastName, string vFirstName, string vFloorId, string vDeptId, string vSrchType)
         {
             FloorBLL mFloorBLL = null;
             DataSet mDset = null;

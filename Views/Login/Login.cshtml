@@ -197,7 +197,6 @@
         }
 
         function OnSuccess(data) {
-
             if (data.isUserExists == "Y") {
                 window.location.href = '@Url.Action("Index", "Home")';
             }
@@ -206,6 +205,50 @@
             }
         }
 
+        function LoginWithSSO() {
+
+            window.location.href = '@Url.Action("LoginWithSSO", "Login")';
+
+            return false;
+        }
+
+
+        function LoginWithCredential() {
+
+            $("#dvSuggestLogin").hide();
+            $("#dvLoginWithCred").show();
+
+            return false;
+        }
+
+        function BackToSuggestion() {
+
+            $("#dvSuggestLogin").show();
+            $("#dvLoginWithCred").hide();
+
+            return false;
+        }
+
+        function OnLoginSSOFailure(data) {
+            alert(JSON.stringify(data));
+        }
+
+        function OnLoginSSOSuccess(data) {
+            if (data.isUserExists == "Y") {
+                window.location.href = '@Url.Action("Index", "Home")';
+            }
+            else {
+                var userName = "";
+                if (data.userName != undefined) userName = data.userName;
+                alert("User (" + userName + ") not exists !!! ");
+            }
+        }
+        //$(document).ready(function () {
+            @if (ViewBag.LoginSuccess == false && ViewBag.UserExists == "N")
+            {
+                @Html.Raw("alert('User (" + ViewBag.UserName + ") not exists !!! ');");
+            }
+        //});        
     </script>
 
     <script src="~/resx/scripts/jquery-1.8.2.min.js"></script>
@@ -216,8 +259,37 @@
     <div class="pen-title" style="font-size: 27px !important">
         <h2 style="color:#fff">出社可視化アプリ</h2>
     </div>
-    <div class="module form-module">
 
+    <div id="dvSuggestLogin" class="module form-module" style="display: block;">
+        <div class="form" style="display: block;">
+
+            <form action="/Login/LoginWithSSO" data-ajax="true" data-ajax-failure="OnLoginSSOFailure"
+                  data-ajax-method="POST" data-ajax-success="OnLoginSSOSuccess" id="form1" method="post">
+
+                <div class="text text-danger">
+                    <span id="spMessage"></span>
+                </div>
+
+                <button id="btnSSOLogin" type="submit" style="color: white; font-size: 16px">
+                    Login with SSO
+                </button>
+                @*Welcome @User.Identity?.Name*@
+
+            </form>
+
+            <br />
+            <br />
+            <br />
+
+            <button id="btnSubmit" type="button" style="color: white; font-size: 16px" onclick="LoginWithCredential();">
+                Login with credential
+            </button>
+
+
+        </div>
+    </div>
+
+    <div id="dvLoginWithCred" class="module form-module" style="display: none;">
         <div class="form" style="display: block;">
             <h2>Login to your account</h2>
 
@@ -241,7 +313,7 @@
                         <button>Register</button>
                     </form>
                 </div>
-                <div class="cta"><a href="http://andytran.me" style="display: none;">Forgot your password?</a></div>
+                <div class="cta text-bold"><a href="#" style="display: block;" onclick="BackToSuggestion()">Back To Option</a></div>
             </form>
 
         </div>
