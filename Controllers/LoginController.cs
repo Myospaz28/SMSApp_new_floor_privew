@@ -45,7 +45,29 @@ namespace SMSApp.Controllers
         [HttpGet]
         public ActionResult Index()
         {
-            LoginBLL mLoginBLL = new LoginBLL();
+            if (Convert.ToBoolean(Configuration.GetSection("AppSettings:IsSSO").Value))
+            {
+                ProcessSSOLogin();
+                return View("Login");
+            }
+            else
+            {
+                return View("Login");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult LoginWithSSO()
+        {
+            ProcessSSOLogin();
+
+            /*
+            LoginBLL mLoginBLL = null;
+            DataSet mDset = new DataSet();
+            mLoginBLL = new LoginBLL();
+            string? IsUserExists = string.Empty;
+
+            //string userName = Environment.UserName;
             var result = HttpContext.AuthenticateAsync(NegotiateDefaults.AuthenticationScheme).Result;
             if (!result.Succeeded)
             {
@@ -57,79 +79,8 @@ namespace SMSApp.Controllers
                     ViewBag.LoginSuccess = false;
                     ViewBag.UserName = "";
                     ViewBag.UserExists = "";
-                    return View("Login");
+                    return null;
                 }
-            }
-
-            // windows login has already succeed
-            // get user name and domain
-            WindowsIdentity winIdentity = (WindowsIdentity)result.Principal.Identity;
-
-            string userName = winIdentity.Name;
-            try
-            {
-                System.IO.File.AppendAllText(_webHostEnvironment.WebRootPath + "\\Log\\" + "LogFile.txt", userName);
-            }
-            catch (Exception)
-            {
-            }
-
-            DataSet mDset = mLoginBLL.UserAuthenticate(userName, "SSO", Configuration);
-
-            if (mDset != null && mDset.Tables.Count > 0 && mDset.Tables[0].Rows.Count > 0)
-            {
-                var IsUserExists = mDset.Tables[0].Rows[0]["IsUserExists"].ToString();
-                if (IsUserExists == "Y")
-                {
-                    var claims = new List<Claim>
-                    {
-                         new Claim(ClaimTypes.Name, mDset.Tables[0].Rows[0]["Name"].ToString()),
-                        new Claim(ClaimTypes.NameIdentifier, mDset.Tables[0].Rows[0]["UserId"].ToString()),
-                        new Claim(ClaimTypes.PrimarySid, mDset.Tables[0].Rows[0]["RoleCode"].ToString()),
-                        new Claim(ClaimTypes.Role, mDset.Tables[0].Rows[0]["RoleName"].ToString()),
-                        new Claim(ClaimTypes.UserData, mDset.Tables[0].Rows[0]["ProfPic"].ToString()),
-                        new Claim(ClaimTypes.Actor, mDset.Tables[0].Rows[0]["UserTitle"].ToString()),
-                        new Claim(ClaimTypes.GivenName, mDset.Tables[0].Rows[0]["DeptName"].ToString())
-                    };
-
-                    var claimsIdentity = new ClaimsIdentity(claims, "Login");
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                    return RedirectToAction("Index", "Home");
-                }
-                else if (IsUserExists == "N")
-                {
-                    ViewBag.LoginSuccess = false;
-                    ViewBag.UserName = userName.Replace("\\", "\\\\");
-                    ViewBag.UserExists = IsUserExists;
-                }
-            }
-            else
-            {
-                ViewBag.LoginSuccess = false;
-                ViewBag.UserExists = "";
-                this.DebugLog("User not exists");
-            }
-
-            return View("Login");
-        }
-
-        [HttpPost]
-        public JsonResult LoginWithSSO()
-        {
-            this.DebugLog("Start 1");
-            this.DebugLog("SSO Entry Check");
-
-            LoginBLL mLoginBLL = null;
-            DataSet mDset = new DataSet();
-            mLoginBLL = new LoginBLL();
-            string? IsUserExists = string.Empty;
-
-            //string userName = Environment.UserName;
-            var result = HttpContext.AuthenticateAsync(NegotiateDefaults.AuthenticationScheme).Result;
-            if (!result.Succeeded)
-            {
-                HttpContext.ChallengeAsync(NegotiateDefaults.AuthenticationScheme).ConfigureAwait(false); //performs NTLM handshake
-                //return StatusCode(Response.StatusCode);  // sends 401
             }
 
             // windows login has already succeed
@@ -210,9 +161,75 @@ namespace SMSApp.Controllers
 
                 return Json(new { IsUserExists = "N", UserName = userName });
             }
+            */
 
-            return Json(new { IsUserExists = "N", UserName = userName });
+            return Json(new { IsUserExists = Convert.ToString(ViewBag.UserExists), UserName = Convert.ToString(ViewBag.UserName) });
         }
+
+        private void ProcessSSOLogin()
+        {
+            LoginBLL mLoginBLL = new LoginBLL();
+            var result = HttpContext.AuthenticateAsync(NegotiateDefaults.AuthenticationScheme).Result;
+            if (!result.Succeeded)
+            {
+                HttpContext.ChallengeAsync(NegotiateDefaults.AuthenticationScheme).ConfigureAwait(false); //performs NTLM handshake
+                result = HttpContext.AuthenticateAsync(NegotiateDefaults.AuthenticationScheme).Result;
+                //return StatusCode(Response.StatusCode);  // sends 401
+                if (!result.Succeeded)
+                {
+                    ViewBag.LoginSuccess = false;
+                    ViewBag.UserName = "";
+                    ViewBag.UserExists = "";
+                    return;
+                }
+            }
+
+            // windows login has already succeed
+            // get user name and domain
+            WindowsIdentity winIdentity = (WindowsIdentity)result.Principal.Identity;
+            string userName = winIdentity.Name;
+
+            DataSet mDset = mLoginBLL.UserAuthenticate(userName, "SSO", Configuration);
+
+            if (mDset != null && mDset.Tables.Count > 0 && mDset.Tables[0].Rows.Count > 0)
+            {
+                var IsUserExists = mDset.Tables[0].Rows[0]["IsUserExists"].ToString();
+                if (IsUserExists == "Y")
+                {
+                    var claims = new List<Claim>
+                    {
+                         new Claim(ClaimTypes.Name, mDset.Tables[0].Rows[0]["Name"].ToString()),
+                        new Claim(ClaimTypes.NameIdentifier, mDset.Tables[0].Rows[0]["UserId"].ToString()),
+                        new Claim(ClaimTypes.PrimarySid, mDset.Tables[0].Rows[0]["RoleCode"].ToString()),
+                        new Claim(ClaimTypes.Role, mDset.Tables[0].Rows[0]["RoleName"].ToString()),
+                        new Claim(ClaimTypes.UserData, mDset.Tables[0].Rows[0]["ProfPic"].ToString()),
+                        new Claim(ClaimTypes.Actor, mDset.Tables[0].Rows[0]["UserTitle"].ToString()),
+                        new Claim(ClaimTypes.GivenName, mDset.Tables[0].Rows[0]["DeptName"].ToString())
+                    };
+
+                    var claimsIdentity = new ClaimsIdentity(claims, "Login");
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                    ViewBag.LoginSuccess = true;
+                    ViewBag.UserName = userName.Replace("\\", "\\\\");
+                    ViewBag.UserExists = IsUserExists;
+                }
+                else if (IsUserExists == "N")
+                {
+                    ViewBag.LoginSuccess = false;
+                    ViewBag.UserName = userName.Replace("\\", "\\\\");
+                    ViewBag.UserExists = IsUserExists;
+                }
+            }
+            else
+            {
+                ViewBag.LoginSuccess = false;
+                ViewBag.UserName = "";
+                ViewBag.UserExists = "";
+            }
+        }
+
+
+
 
         /*
         /// <summary>
@@ -398,7 +415,6 @@ namespace SMSApp.Controllers
 
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
                 }
-
             }
             else
             {
@@ -416,9 +432,14 @@ namespace SMSApp.Controllers
         {
             HttpContext.SignOutAsync();
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.SignOutAsync(NegotiateDefaults.AuthenticationScheme);
-            //HttpContext.User = null;
-            return RedirectToAction("Index", "Login");
+            if (Convert.ToBoolean(Configuration.GetSection("AppSettings:IsSSO").Value))
+            {
+                HttpContext.SignOutAsync(NegotiateDefaults.AuthenticationScheme);
+                //HttpContext.User = null;
+                //return RedirectToAction("Index", "Login");
+                //return View("Logout");
+            }
+            return View("Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

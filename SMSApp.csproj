@@ -19,6 +19,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Views\Shared\_Layout1.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AspNetCore.Unobtrusive.Ajax" Version="2.0.0" />
 		<PackageReference Include="EnterpriseLibrary.Data" Version="6.0.1304" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Negotiate" Version="6.0.20" />
